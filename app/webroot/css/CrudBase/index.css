@@ -1,0 +1,82 @@
+@CHARSET "UTF-8";
+
+
+
+.hr_purple{
+	border-top: solid 1px #9954bb;
+}
+
+.purple{
+	color:#9954bb;
+}
+
+.kj_div{
+	float:left;
+	display:inline-block;
+	width:auto;
+	height:auto;
+	margin-right:20px;
+	margin-top:4px;
+	margin-bottom:4px;
+}
+
+#kjs2{
+	display:none;
+	margin-top:12px;
+}
+
+.d_flg_true{
+	color:#23d6e4;
+}
+
+.d_flg_false{
+	color:#b4b4b4;
+}
+
+
+#clm_cbs_rap{
+	margin-top: 10px;
+	margin-bottom: 30px;
+	border-top: solid 1px #9954bb;
+	padding: 4px;
+}
+
+
+#clm_cbs_rap p{
+	color:#9954bb;
+}
+
+
+#total_div{
+	margin-top:5px;
+	margin-bottom:5px;
+
+}
+
+#total_div td{
+	padding-left:10px;
+}
+
+#total_div aside{
+	font-size:0.7em;
+	color:#fa9d5f;
+}
+
+#func_btns{
+	margin-top:8px;
+}
+
+/* 横並びリスト */
+.ul_side_by_side{
+	padding-left: 0px;
+	list-style-type: none;
+}
+.ul_side_by_side li{
+	float:left;
+	margin-right: 5px;
+}
+
+.new_line{
+	background-color:#fdeaea;
+}
+

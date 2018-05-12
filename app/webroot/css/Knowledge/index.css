@@ -1,0 +1,13 @@
+
+#ajax_crud_new_inp_form textarea{
+	width:480px;
+}
+#ajax_crud_new_inp_form input[type="text"]{
+	width:480px;
+}
+#ajax_crud_edit_form textarea{
+	width:480px;
+}
+#ajax_crud_edit_form input[type="text"]{
+	width:480px;
+}

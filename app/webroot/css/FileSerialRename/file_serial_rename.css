@@ -1,0 +1,12 @@
+@CHARSET "UTF-8";
+
+.radio label {
+	width:130px;
+	padding-left:0px;
+}
+
+#success{
+	margin:20px;
+	font-size:2em;
+	color:#2ca86c;
+}
