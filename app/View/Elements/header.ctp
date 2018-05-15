@@ -34,9 +34,13 @@
 			<ul class="nav navbar-nav navbar-right">
 				<li class="top_menu_pull" style="z-index:2;">
 				<?php if(!empty($userInfo)){
-					echo "<a href='#'>{$userInfo['username']}</a>";
+					$username = 'none';
+					if(!empty($userInfo['username'])) $username = $userInfo['username'];
+					$wamei = '未ログイン';
+					if(!empty($userInfo['authority']['wamei'])) $wamei = $userInfo['authority']['wamei'];
+					echo "<a href='#'>{$username}</a>";
 					echo "<ul>";
-					echo "<li>{$userInfo['authority']['wamei']}</li>";
+					echo "<li>{$wamei}</li>";
 					echo "</ul>";
 				} ?>
 

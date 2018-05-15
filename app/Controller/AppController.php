@@ -26,9 +26,7 @@ class AppController extends Controller {
 	}
 
 	public function beforeFilter(){
-		
 
-		
 		// ■■■□□□■■■□□□■■■□□□一時的なバグ回避
 		if(empty($role)){
 			$role="developer";
@@ -42,7 +40,7 @@ class AppController extends Controller {
 	 * 
 	 * @note
 	 * セッション中に存在しなければデフォルトを取得。
-	 * @return チャット設定情報
+	 * @return array チャット設定情報
 	 */
     protected function getOpChatConfig(){
     	$chatConfig=$this->Session->read('shch_chat_config');

@@ -73,9 +73,11 @@ class Knowledge extends AppModel {
 	 * @param int $row_limit 表示件数
 	 * @param string sort ソートフィールド
 	 * @param int sort_desc ソートタイプ 0:昇順 , 1:降順
+	 * @param int $mode モード   0:閲覧モード , 1:覚えモード , 2:管理モード
 	 * @return array 心得メイン画面一覧のデータ
 	 */
-	public function findData($kjs,$page_no,$row_limit,$sort_field,$sort_desc){
+	public function findData($kjs,$page_no,$row_limit,$sort_field,$sort_desc,$mode){
+
 
 		//条件を作成
 		$conditions=$this->createKjConditions($kjs);
@@ -86,8 +88,12 @@ class Knowledge extends AppModel {
 		
 		// ORDER文の組み立て
 		$order = $sort_field;
-		if(empty($order)) $order='sort_no';
-		if(!empty($sort_desc)) $order .= ' DESC';
+		if($mode == 2){
+			if(empty($order)) $order='sort_no';
+			if(!empty($sort_desc)) $order .= ' DESC';
+		}else{
+			$order = 'level , dtm DESC';
+		}
 		
 		$option=array(
             'conditions' => $conditions,
@@ -115,13 +121,15 @@ class Knowledge extends AppModel {
 	
 	/**
 	 * 一覧データを取得する
+	 * @param array $crudBaseData
+	 * @param int $mode モード   0:閲覧モード , 1:覚えモード , 2:管理モード
 	 */
-	public function findData2(&$crudBaseData){
+	public function findData2(&$crudBaseData,$mode){
 
 		$kjs = $crudBaseData['kjs'];//検索条件情報
 		$pages = $crudBaseData['pages'];//ページネーション情報
 
-		$data = $this->findData($kjs,$pages['page_no'],$pages['row_limit'],$pages['sort_field'],$pages['sort_desc']);
+		$data = $this->findData($kjs,$pages['page_no'],$pages['row_limit'],$pages['sort_field'],$pages['sort_desc'],$mode);
 		
 		return $data;
 	}

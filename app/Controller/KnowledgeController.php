@@ -50,7 +50,8 @@ class KnowledgeController extends CrudBaseController {
 
 
 	public function beforeFilter() {
-	
+		$this->Auth->allow(); // 認証と未認証の両方に対応したページする。
+		
 		parent::beforeFilter();
 	
 		$this->initCrudBase();// フィールド関連の定義をする。
@@ -69,8 +70,11 @@ class KnowledgeController extends CrudBaseController {
         // CrudBase共通処理（前）
 		$crudBaseData = $this->indexBefore('Knowledge');//indexアクションの共通先処理(CrudBaseController)
 		
+		$userInfo = $crudBaseData['userInfo'];
+		$mode = $this->getMode($userInfo); // モードを取得する
+		
 		//一覧データを取得
-		$data = $this->Knowledge->findData2($crudBaseData);
+		$data = $this->Knowledge->findData2($crudBaseData,$mode);
 
 		// CrudBase共通処理（後）
 		$crudBaseData = $this->indexAfter($crudBaseData);//indexアクションの共通後処理
@@ -88,6 +92,7 @@ class KnowledgeController extends CrudBaseController {
 		$this->set(array(
 			'title_for_layout'=>'心得メイン',
 			'data'=> $data,
+			'mode'=> $mode,
 		));
 		
 		//当画面系の共通セット
@@ -96,6 +101,28 @@ class KnowledgeController extends CrudBaseController {
 
 	}
 
+	/**
+	 * モードを取得する
+	 * @return int モード   0:閲覧モード , 1:覚えモード , 2:管理モード
+	 */
+	private function getMode($userInfo){
+		
+		$login_flg = false; // ログインフラグ: true:ログイン中 , false:未ログイン
+		if(!empty($userInfo['id'])) $login_flg = true;
+
+		$mode = 0;
+		if($login_flg == true){
+			if(!empty($this->params['url']['mode'])){
+				$mode = $this->params['url']['mode'];
+			}else{
+				$mode = 1;
+			}
+		}
+
+		return $mode;
+	}
+	
+	
 	/**
 	 * 詳細画面
 	 * 

@@ -22,6 +22,11 @@ var pwms; // ProcessWithMultiSelection.js | 一覧のチェックボックス複
  */
 function init(){
 	
+	// CakePHPによるAjax認証
+	var alwc = new AjaxLoginWithCake();
+	var option = {'form_slt':'#ajax_login_with_cake'}
+	alwc.loginCheckEx(callbackLogin,option);
+	
 	// 検索条件情報を取得する
 	var kjs_json = jQuery('#kjs_json').val();
 	var kjs = jQuery.parseJSON(kjs_json);
@@ -81,16 +86,21 @@ function init(){
 	});
 	
 	
-	// 日付カレンダーのセット
-	// CBBXS-1030
-
-	// CBBXE
-	
-	// ■■■□□□■■■□□□■■■□□□■■■
-//	// CSVインポートの初期化  <CrudBase/index.js>
-//	initCsvImportFu('knowledge/csv_fu');
+	// モードの取得
+	var mode = jQuery('#mode').val();
+	changeUibyMode(mode); // ユーザーインターフェース切替
 	
 }
+
+
+/**
+ * Ajaxログイン後
+ * 
+ */
+function callbackLogin(){
+	console.log('test=ログインテスト');//■■■□□□■■■□□□■■■□□□)
+}
+
 
 /**
  * 新規入力フォームを表示
@@ -265,5 +275,20 @@ function session_clear(){
 	crudBase.csh.reset();
 	
 	location.href = '?ini=1&sc=1';
+}
+
+
+/**
+ * ユーザーインターフェース切替
+ * @param mode モード   0:閲覧モード , 1:覚えモード , 2:管理モード
+ */
+function changeUibyMode(mode){
+
+	if(mode == 0){
+		jQuery('.navbar-fixed-top').hide();
+	}else if(mode == 1){
+	}else if(mode == 2){
+		
+	}
 }
 

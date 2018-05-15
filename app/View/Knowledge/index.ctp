@@ -8,24 +8,22 @@ $this->assign('css', $this->Html->css($cssList));
 
 // JSファイルのインクルード
 $jsList = $this->CrudBase->getJsList();
-$jsList[] = 'Knowledge/index'; // 当画面専用JavaScript
+$jsList[] = 'Knowledge/index'; // 当画面専用JavaScrip
+$jsList[] = 'CrudBase/AjaxLoginWithCake.js';
 $this->assign('script', $this->Html->script($jsList,array('charset'=>'utf-8')));
 
 ?>
 
-
-
-
-<h2>心得メイン</h2>
-
-心得メインの検索閲覧および編集する画面です。<br>
-<br>
+<h2>心得</h2>
 
 <?php
 	$this->Html->addCrumb("トップ",'/');
 	$this->Html->addCrumb("心得メイン");
 	echo $this->Html->getCrumbs(" > ");
 ?>
+
+<!-- 認証用 -->
+<div id="ajax_login_with_cake"></div>
 
 <?php echo $this->element('CrudBase/crud_base_new_page_version');?>
 <div id="err" class="text-danger"><?php echo $errMsg;?></div>
@@ -38,6 +36,7 @@ $this->assign('script', $this->Html->script($jsList,array('charset'=>'utf-8')));
 		<span class="glyphicon glyphicon-certificate"  ></span></a>
 	<?php $this->CrudBase->newBtn();// 新規入力ボタンを作成 ?>
 	<a href="kl_category" class="btn btn-primary btn-sm" >心得カテゴリー</a>
+	
 </div>
 <div style="clear:both"></div>
 
@@ -414,7 +413,7 @@ foreach($data as $i=>$ent){
 	
 	<!-- CBBXS-1022 -->
 	<input id="kl_category_json" type="hidden" value='<?php echo $kl_category_json; ?>' />
-
+	<input id="mode" type="hidden" value="<?php echo $mode; ?>" />
 	<!-- CBBXE -->
 </div>
 
