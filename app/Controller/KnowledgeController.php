@@ -79,6 +79,12 @@ class KnowledgeController extends CrudBaseController {
 		// CrudBase共通処理（後）
 		$crudBaseData = $this->indexAfter($crudBaseData);//indexアクションの共通後処理
 		
+		// モードが閲覧モードもしくは閲覧モードであるなら、列表示情報を書き換える
+		if($mode==0 || $mode==1){
+			$crudBaseData = $this->rewriteCsh($crudBaseData);
+		}
+
+		
 		// CBBXS-1020
 
 		// カテゴリリスト
@@ -120,6 +126,28 @@ class KnowledgeController extends CrudBaseController {
 		}
 
 		return $mode;
+	}
+	
+	
+	/**
+	 * モードが閲覧モードもしくは閲覧モードであるなら、列表示情報を書き換える
+	 * @param array $crudBaseData
+	 * @return array $crudBaseData
+	 */
+	private function rewriteCsh(&$crudBaseData){
+		$csh_ary = $crudBaseData['csh_ary'];
+		for($i=0;$i<count($csh_ary);$i++){
+			if($i==1){
+				$csh_ary[$i]=1;
+			}else{
+				$csh_ary[$i]=0;
+			}
+			
+		}
+		$csh_json = json_encode($csh_ary);
+		$crudBaseData['csh_ary'] = $csh_ary;
+		$crudBaseData['csh_json'] = $csh_json;
+		return $crudBaseData;
 	}
 	
 	
@@ -168,7 +196,8 @@ class KnowledgeController extends CrudBaseController {
 	 * 
 	 */
 	public function edit() {
-
+		
+		if(empty($this->Auth->user())) return 'Error:login is needed.';// 認証中でなければエラー
 		$res=$this->edit_before('Knowledge');
 		$ent=$res['ent'];
 
@@ -189,6 +218,8 @@ class KnowledgeController extends CrudBaseController {
 	 * 入力エラーがある場合は、入力画面へ、エラーメッセージと共にリダイレクトで戻ります。
 	 */
 	public function reg(){
+		
+		if(empty($this->Auth->user())) return 'Error:login is needed.';// 認証中でなければエラー
 		$res=$this->reg_before('Knowledge');
 		$ent=$res['ent'];
 		
@@ -230,8 +261,9 @@ class KnowledgeController extends CrudBaseController {
 	 */
 	public function ajax_reg(){
 		App::uses('Sanitize', 'Utility');
-	
+
 		$this->autoRender = false;//ビュー(ctp)を使わない。
+		if(empty($this->Auth->user())) return 'Error:login is needed.';// 認証中でなければエラー
 
 		// JSON文字列をパースしてエンティティを取得する
 		$json=$_POST['key1'];
@@ -290,7 +322,8 @@ class KnowledgeController extends CrudBaseController {
 	 */
 	public function ajax_delete(){
 		App::uses('Sanitize', 'Utility');
-	
+		if(empty($this->Auth->user())) return 'Error:login is needed.';// 認証中でなければエラー
+		
 		$this->autoRender = false;//ビュー(ctp)を使わない。
 	
 		// JSON文字列をパースしてエンティティを取得する
@@ -337,6 +370,7 @@ class KnowledgeController extends CrudBaseController {
 		App::uses('Sanitize', 'Utility');
 		
 		$this->autoRender = false;//ビュー(ctp)を使わない。
+		if(empty($this->Auth->user())) return 'Error:login is needed.';// 認証中でなければエラー
 		
 		$json=$_POST['key1'];
 		
@@ -365,6 +399,7 @@ class KnowledgeController extends CrudBaseController {
 	 */
 	public function csv_fu(){
 		$this->autoRender = false;//ビュー(ctp)を使わない。
+		if(empty($this->Auth->user())) return 'Error:login is needed.';// 認証中でなければエラー
 		
 		$this->csv_fu_base($this->Knowledge,array('id','knowledge_val','knowledge_name','knowledge_date','knowledge_group','knowledge_dt','note','sort_no'));
 		

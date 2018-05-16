@@ -14,19 +14,24 @@ $this->assign('script', $this->Html->script($jsList,array('charset'=>'utf-8')));
 
 ?>
 
-<h2>心得</h2>
+<div id="h2_div">
+	<div><h2>心得</h2></div>
+	<div id="ajax_login_with_cake"></div><!-- 認証用 -->
+	<div id="btn_mode_m" style="display:none"><a href="?a=1&mode=2" class="btn btn-warning btn-xs" >管理者モード</a></div>
+	<div id="btn_mode_l" style="display:none"><a href="?a=1&mode=1" class="btn btn-warning btn-xs" >覚えモード</a></div>
+</div>
 
+
+<div id="err" class="text-danger"><?php echo $errMsg;?></div>
+
+<div id="func_div" style="display:none">
 <?php
 	$this->Html->addCrumb("トップ",'/');
 	$this->Html->addCrumb("心得メイン");
 	echo $this->Html->getCrumbs(" > ");
 ?>
 
-<!-- 認証用 -->
-<div id="ajax_login_with_cake"></div>
-
 <?php echo $this->element('CrudBase/crud_base_new_page_version');?>
-<div id="err" class="text-danger"><?php echo $errMsg;?></div>
 
 
 <div id="func_btns" >
@@ -92,11 +97,13 @@ $this->assign('script', $this->Html->script($jsList,array('charset'=>'utf-8')));
 		<a href="#help_lists" class="livipage btn btn-info btn-xs" title="ヘルプ"><span class="glyphicon glyphicon-question-sign"></span></a></div>
 </div>
 
+</div><!-- func_div -->
+
 <div id="crud_base_auto_save_msg" style="height:20px;" class="text-success"></div>
 <!-- 一覧テーブル -->
 <table id="knowledge_tbl" border="1"  class="table table-striped table-bordered table-condensed">
 
-<thead>
+<thead style="display:none">
 <tr>
 	<?php
 	foreach($field_data as $ent){
@@ -112,7 +119,6 @@ $this->assign('script', $this->Html->script($jsList,array('charset'=>'utf-8')));
 
 // td要素出力を列並モードに対応させる
 $this->CrudBase->startClmSortMode($field_data);
-
 foreach($data as $i=>$ent){
 
 	echo "<tr id=i{$ent['id']}>";
@@ -273,7 +279,7 @@ foreach($data as $i=>$ent){
 			<label class="text-danger" for="doc_text"></label>
 		</td></tr>
 		<tr><td>学習日時: </td><td>
-			<input type="text" name="dtm" class="valid" value=""  pattern="([0-9]{4})(/|-)([0-9]{1,2})(/|-)([0-9]{1,2}) d{2}:d{2}:d{2}" title="日時形式（Y-m-d H:i:s）で入力してください(例：2012-12-12 12:12:12)" />
+			<input type="text" name="dtm" class="valid" value=""  pattern="([0-9]{4})(/|-)([0-9]{1,2})(/|-)([0-9]{1,2}) [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}" title="日時形式（Y-m-d H:i:s）で入力してください(例：2012-12-12 12:12:12)" />
 			<label class="text-danger" for="dtm"></label>
 		</td></tr>
 		<tr><td>学習レベル: </td><td>
