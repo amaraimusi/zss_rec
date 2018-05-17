@@ -21,7 +21,7 @@ class KnowledgeController extends CrudBaseController {
 	public $uses = array('Knowledge','CrudBase');
 	
 	/// オリジナルヘルパーの登録
-	public $helpers = array('CrudBase');
+	public $helpers = array('CrudBase','Knowledge');
 
 	/// デフォルトの並び替え対象フィールド
 	public $defSortFeild='Knowledge.sort_no';
@@ -75,7 +75,8 @@ class KnowledgeController extends CrudBaseController {
 		
 		//一覧データを取得
 		$data = $this->Knowledge->findData2($crudBaseData,$mode);
-
+		$data_json = json_encode($data,JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS);
+		
 		// CrudBase共通処理（後）
 		$crudBaseData = $this->indexAfter($crudBaseData);//indexアクションの共通後処理
 		
@@ -94,11 +95,13 @@ class KnowledgeController extends CrudBaseController {
 
 		// CBBXE
 		
+
 		$this->set($crudBaseData);
 		$this->set(array(
-			'title_for_layout'=>'心得メイン',
-			'data'=> $data,
-			'mode'=> $mode,
+				'title_for_layout'=>'心得メイン',
+				'data'=> $data,
+				'data_json'=> $data_json,
+				'mode'=> $mode,
 		));
 		
 		//当画面系の共通セット
@@ -454,6 +457,32 @@ class KnowledgeController extends CrudBaseController {
 		 
 	
 	
+	}
+	
+	
+	/**
+	 * Ajax | 心得エンティティのレベルなどを更新する
+	 *
+	 */
+	public function learn_save(){
+
+		$this->autoRender = false;//ビュー(ctp)を使わない。
+		if(empty($this->Auth->user())) return 'Error:login is needed.';// 認証中でなければエラー
+		
+		$json=$_POST['key1'];
+		
+		$ent = json_decode($json,true);//JSON文字を配列に戻す
+		
+		// データ保存
+		$this->Knowledge->begin();
+		$this->Knowledge->saveEntity($ent,array('form_type'=>'edit')); // 心得エンティティを保存
+		$this->Knowledge->commit();
+		
+		$res = array('success');
+		
+		$json_str = json_encode($res);//JSONに変換
+		
+		return $json_str;
 	}
 	
 	

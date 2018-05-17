@@ -1,6 +1,7 @@
 
+var learnCounter; // 覚えカウンタークラス
 
-$(function() {
+$(() => {
 	init();//初期化
 });
 
@@ -90,6 +91,11 @@ function init(){
 	var mode = jQuery('#mode').val();
 	changeUibyMode(mode); // ユーザーインターフェース切替
 	
+	if(mode==1){
+		learnCounter = new LearnCounter(); // 覚えカウンタークラスの生成
+	}
+	
+	
 }
 
 
@@ -98,7 +104,7 @@ function init(){
  * 
  */
 function callbackLogin(){
-	console.log('test=ログインテスト');//■■■□□□■■■□□□■■■□□□)
+	
 }
 
 
@@ -293,7 +299,8 @@ function changeUibyMode(mode){
 
 		jQuery('#knowledge_tbl thead').show();
 		jQuery('#btn_mode_m').show();
-
+		jQuery('.learn_btn').show();
+		
 	}else if(mode == 2){
 		
 		jQuery('#func_div').show();
@@ -335,4 +342,13 @@ function tblClmShow(tbl,clm_index,show_flg){
 		}
 	});
 
+}
+
+/**
+ * 覚えアクション
+ * @param object btnElm ボタン要素
+ * @param int id 心得ID
+ */
+function learnAction(btnElm,id){
+	learnCounter.learnClick(btnElm,id);
 }

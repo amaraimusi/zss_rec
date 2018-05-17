@@ -8,6 +8,7 @@ $this->assign('css', $this->Html->css($cssList));
 
 // JSファイルのインクルード
 $jsList = $this->CrudBase->getJsList();
+$jsList[] = 'Knowledge/LearnCounter.js';
 $jsList[] = 'Knowledge/index'; // 当画面専用JavaScrip
 $jsList[] = 'CrudBase/AjaxLoginWithCake.js';
 $this->assign('script', $this->Html->script($jsList,array('charset'=>'utf-8')));
@@ -117,14 +118,12 @@ $this->assign('script', $this->Html->script($jsList,array('charset'=>'utf-8')));
 <tbody>
 <?php
 
-// td要素出力を列並モードに対応させる
-$this->CrudBase->startClmSortMode($field_data);
 foreach($data as $i=>$ent){
 
 	echo "<tr id=i{$ent['id']}>";
 	// CBBXS-1005
 	$this->CrudBase->tdId($ent,'id',array('checkbox_name'=>'pwms'));
-	$this->CrudBase->tdNote($ent,'kl_text');
+	$this->Knowledge->tdKlText($ent);
 	$this->CrudBase->tdStr($ent,'xid');
 	$this->CrudBase->tdList($ent,'kl_category',$klCategoryList);
 	$this->CrudBase->tdStr($ent,'contents_url');
@@ -138,10 +137,8 @@ foreach($data as $i=>$ent){
 	$this->CrudBase->tdStr($ent,'ip_addr');
 	$this->CrudBase->tdPlain($ent,'created');
 	$this->CrudBase->tdPlain($ent,'modified');
-
 	// CBBXE
 	
-	$this->CrudBase->tdsEchoForClmSort();// 列並に合わせてTD要素群を出力する
 	
 	// 行のボタン類
 	echo "<td><div class='btn-group' style='display:inline-block'>";
@@ -419,6 +416,7 @@ foreach($data as $i=>$ent){
 	
 	<!-- CBBXS-1022 -->
 	<input id="kl_category_json" type="hidden" value='<?php echo $kl_category_json; ?>' />
+	<input id="data_json" type="hidden" value='<?php echo $data_json; ?>' />
 	<input id="mode" type="hidden" value="<?php echo $mode; ?>" />
 	<!-- CBBXE -->
 </div>
