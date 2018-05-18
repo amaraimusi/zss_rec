@@ -111,11 +111,12 @@ class LearnCounter{
 
 			// 現在日時を取得（文字列）
 			var now_dt = new Date().toLocaleString();
-			
+
 			// レベルの加算と、日付を更新
 			ent.level ++;
 			ent.dtm = now_dt;
 			ent.modified = now_dt;
+			ent['next_dtm'] = this._calcNextDtm(ent.level); // 次回日時
 
 			btnElm = jQuery(btnElm);
 			btnElm.hide();// 覚えボタンをいったん隠す
@@ -185,6 +186,29 @@ class LearnCounter{
 			alert(statusText);
 		});		
 	}
+	
+	/**
+	 * 次回日時を算出する
+	 * @param int next_level 次レベル
+	 */
+	_calcNextDtm(next_level){
+		
+		var today = new Date();
+		
+		// レベルから休眠日数を算出する
+		var dorman = this._getDormanByLevel(next_level);
+		
+		var today_u = Math.floor(today);
+		var dorman_u = dorman * 86400000;
+		
+		// 残り = 更新日 + 休眠 - 現在
+		var next_u = dorman_u + today_u;
+		var d = new Date(next_u).toLocaleString(); // UNIXタイムスタンプからDateに変換
+
+		return d;
+
+	}
+	
 	
 	/**
 	 *  休眠チェック
@@ -281,6 +305,8 @@ class LearnCounter{
 
 		
 	}
+	
+	
 	
 	/**
 	 * レベルから休眠日数を算出する

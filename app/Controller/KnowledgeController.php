@@ -78,7 +78,8 @@ class KnowledgeController extends CrudBaseController {
 		$data_json = json_encode($data,JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS);
 		
 		// CrudBase共通処理（後）
-		$crudBaseData = $this->indexAfter($crudBaseData);//indexアクションの共通後処理
+		$iaOption['pagenation_param'] = array('mode'=>$mode,'a'=>1); // ページネーションの各URLに付加するGETクエリ。
+		$crudBaseData = $this->indexAfter($crudBaseData,$iaOption);//indexアクションの共通後処理
 		
 		// モードが閲覧モードもしくは閲覧モードであるなら、列表示情報を書き換える
 		if($mode==0 || $mode==1){
@@ -549,28 +550,28 @@ class KnowledgeController extends CrudBaseController {
 		
 		/// 検索条件情報の定義
 		$this->kensakuJoken=array(
-		
-			// CBBXS-1000 
-			array('name'=>'kj_id','def'=>null),
-			array('name'=>'kj_kl_text','def'=>null),
-			array('name'=>'kj_xid','def'=>null),
-			array('name'=>'kj_kl_category','def'=>null),
-			array('name'=>'kj_contents_url','def'=>null),
-			array('name'=>'kj_doc_name','def'=>null),
-			array('name'=>'kj_doc_text','def'=>null),
-			array('name'=>'kj_dtm','def'=>null),
-			array('name'=>'kj_level1','def'=>null),
-			array('name'=>'kj_level2','def'=>null),
-			array('name'=>'kj_sort_no','def'=>null),
-			array('name'=>'kj_delete_flg','def'=>0),
-			array('name'=>'kj_update_user','def'=>null),
-			array('name'=>'kj_ip_addr','def'=>null),
-			array('name'=>'kj_created','def'=>null),
-			array('name'=>'kj_modified','def'=>null),
-
-			// CBBXE
-			
-			array('name'=>'row_limit','def'=>50),
+				// CBBXS-1000 
+				array('name'=>'kj_id','def'=>null),
+				array('name'=>'kj_kl_text','def'=>null),
+				array('name'=>'kj_xid','def'=>null),
+				array('name'=>'kj_kl_category','def'=>null),
+				array('name'=>'kj_contents_url','def'=>null),
+				array('name'=>'kj_doc_name','def'=>null),
+				array('name'=>'kj_doc_text','def'=>null),
+				array('name'=>'kj_dtm','def'=>null),
+				array('name'=>'kj_next_dtm','def'=>null),
+				array('name'=>'kj_level1','def'=>null),
+				array('name'=>'kj_level2','def'=>null),
+				array('name'=>'kj_sort_no','def'=>null),
+				array('name'=>'kj_delete_flg','def'=>0),
+				array('name'=>'kj_update_user','def'=>null),
+				array('name'=>'kj_ip_addr','def'=>null),
+				array('name'=>'kj_created','def'=>null),
+				array('name'=>'kj_modified','def'=>null),
+	
+				// CBBXE
+				
+				array('name'=>'row_limit','def'=>50),
 				
 		);
 		
@@ -635,6 +636,13 @@ class KnowledgeController extends CrudBaseController {
 						'maxLength'=>array(
 								'rule' => array('maxLength', 20),
 								'message' => '学習日時は20文字以内で入力してください',
+								'allowEmpty' => true
+						),
+				),
+				'kj_next_dtm'=> array(
+						'maxLength'=>array(
+								'rule' => array('maxLength', 20),
+								'message' => '次回日時は20文字以内で入力してください',
 								'allowEmpty' => true
 						),
 				),
@@ -737,6 +745,11 @@ class KnowledgeController extends CrudBaseController {
 			'dtm'=>array(
 					'name'=>'学習日時',
 					'row_order'=>'Knowledge.dtm',
+					'clm_show'=>0,
+			),	
+			'next_dtm'=>array(
+					'name'=>'次回日時',
+					'row_order'=>'Knowledge.next_',
 					'clm_show'=>0,
 			),
 			'level'=>array(

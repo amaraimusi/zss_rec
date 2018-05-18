@@ -11,7 +11,7 @@ App::uses('AppController', 'Controller');
 class CrudBaseController extends AppController {
 
 	///バージョン
-	var $version = "2.3.2";
+	var $version = "2.3.3";
 
 	///デフォルトの並び替え対象フィールド
 	var $defSortFeild='sort_no';
@@ -140,7 +140,7 @@ class CrudBaseController extends AppController {
 
 		//フィールドデータから列表示配列を取得
 		$csh_ary = $this->exstractClmShowHideArray($this->field_data);
-		$csh_json=json_encode($csh_ary);
+		$csh_json = json_encode($csh_ary);
 
 		//サニタイズクラスをインポート
 		App::uses('Sanitize', 'Utility');
@@ -508,21 +508,25 @@ class CrudBaseController extends AppController {
 	/**
 	 * indexアクションの共通処理（後）
 	 *
-	 * @param $crudBaseData
+	 * @param array $crudBaseData
+	 * @param $option
+	 *  - pagenation_param ページネーションの目次に付加するパラメータ
 	 * @return $crudBaseData
 	 */
-	protected function indexAfter(&$crudBaseData){
+	protected function indexAfter(&$crudBaseData,$option=array()){
 
-        // 検索データ数を取得
-	    $kjs = $crudBaseData['kjs'];
+		// 検索データ数を取得
+		$kjs = $crudBaseData['kjs'];
 		$data_count=$this->MainModel->findDataCnt($kjs); 
 
 		//ページネーション情報を取得する
 		$base_url = $this->webroot.$this->main_model_name_s; // 基本ＵＲＬ
 		$pages = $crudBaseData['pages'];
 		
+		$pagenation_param = null;
+		if(isset($option['pagenation_param'])) $pagenation_param = $option['pagenation_param'];
 		$this->PagenationForCake = new PagenationForCake();
-		$pages = $this->PagenationForCake->createPagenationData($pages,$data_count,$base_url , null,$this->table_fields,$kjs);
+		$pages = $this->PagenationForCake->createPagenationData($pages,$data_count,$base_url , $pagenation_param,$this->table_fields,$kjs);
 
 		$kjs_json = json_encode($kjs,JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS);
 		

@@ -92,7 +92,7 @@ class Knowledge extends AppModel {
 			if(empty($order)) $order='sort_no';
 			if(!empty($sort_desc)) $order .= ' DESC';
 		}else{
-			$order = 'level , dtm DESC';
+			$order = 'next_dtm';
 		}
 		
 		$option=array(
@@ -190,6 +190,11 @@ class Knowledge extends AppModel {
 			$kj_dtm = $kjs['kj_dtm'];
 			$dtInfo = $this->CrudBase->guessDatetimeInfo($kj_dtm);
 			$cnds[]="DATE_FORMAT(Knowledge.dtm,'{$dtInfo['format_mysql_a']}') = DATE_FORMAT('{$dtInfo['datetime_b']}','{$dtInfo['format_mysql_a']}')";
+		}
+		if(!empty($kjs['kj_next_dtm'])){
+			$kj_next_dtm = $kjs['kj_next_dtm'];
+			$dtInfo = $this->CrudBase->guessDatetimeInfo($kj_next_dtm);
+			$cnds[]="DATE_FORMAT(Knowledge.next_dtm,'{$dtInfo['format_mysql_a']}') = DATE_FORMAT('{$dtInfo['datetime_b']}','{$dtInfo['format_mysql_a']}')";
 		}
 		if(!empty($kjs['kj_level1'])){
 			$cnds[]="Knowledge.level >= {$kjs['kj_level1']}";

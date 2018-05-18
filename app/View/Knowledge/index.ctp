@@ -22,6 +22,14 @@ $this->assign('script', $this->Html->script($jsList,array('charset'=>'utf-8')));
 	<div id="btn_mode_l" style="display:none"><a href="?a=1&mode=1" class="btn btn-warning btn-xs" >覚えモード</a></div>
 </div>
 
+<div id="learn_index" class="btn-group" style="display:none">
+	<a href="?a=1" class="btn btn-info btn-xs" >全て</a>
+	<a href="?a=1&kj_kl_category=1" class="btn btn-info btn-xs" >霊的</a>
+	<a href="?a=1&kj_kl_category=2" class="btn btn-info btn-xs" >一般</a>
+	<a href="?a=1&kj_kl_category=4" class="btn btn-info btn-xs" >文章</a>
+	<a href="?a=1&kj_kl_category=5" class="btn btn-info btn-xs" >宣教</a>
+</div>
+
 
 <div id="err" class="text-danger"><?php echo $errMsg;?></div>
 
@@ -64,6 +72,7 @@ $this->assign('script', $this->Html->script($jsList,array('charset'=>'utf-8')));
 		$this->CrudBase->inputKjText($kjs,'kj_doc_name','文献名');
 		$this->CrudBase->inputKjText($kjs,'kj_doc_text','文献テキスト');
 		$this->CrudBase->inputKjText($kjs,'kj_dtm','学習日時');
+		$this->CrudBase->inputKjText($kjs,'kj_next_dtm','次回日時');
 		$this->CrudBase->inputKjNouislider($kjs,'level','学習レベル');
 		$this->CrudBase->inputKjHidden($kjs,'kj_sort_no');
 		$this->CrudBase->inputKjDeleteFlg($kjs);
@@ -88,17 +97,15 @@ $this->assign('script', $this->Html->script($jsList,array('charset'=>'utf-8')));
 </div><!-- detail_div -->
 <?php echo $this->Form->end()?>
 
+</div><!-- func_div -->
 
 <div style="margin-top:8px;">
 	<div style="display:inline-block">
 		<?php echo $pages['page_index_html'];//ページ目次 ?>
 	</div>
 	<div style="display:inline-block">件数:<?php echo $data_count ?></div>
-	<div style="display:inline-block">
-		<a href="#help_lists" class="livipage btn btn-info btn-xs" title="ヘルプ"><span class="glyphicon glyphicon-question-sign"></span></a></div>
 </div>
 
-</div><!-- func_div -->
 
 <div id="crud_base_auto_save_msg" style="height:20px;" class="text-success"></div>
 <!-- 一覧テーブル -->
@@ -130,6 +137,7 @@ foreach($data as $i=>$ent){
 	$this->CrudBase->tdStr($ent,'doc_name');
 	$this->CrudBase->tdNote($ent,'doc_text');
 	$this->CrudBase->tdPlain($ent,'dtm');
+	$this->CrudBase->tdPlain($ent,'next_dtm');
 	$this->CrudBase->tdPlain($ent,'level');
 	$this->CrudBase->tdPlain($ent,'sort_no');
 	$this->CrudBase->tdDeleteFlg($ent,'delete_flg');
@@ -162,7 +170,9 @@ foreach($data as $i=>$ent){
 </tbody>
 </table>
 
-<?php echo $this->element('CrudBase/crud_base_pwms'); // 複数選択による一括処理 ?>
+<div id='pwms_w' style="display:none">
+	<?php echo $this->element('CrudBase/crud_base_pwms'); // 複数選択による一括処理 ?>
+</div>
 
 <!-- 新規入力フォーム -->
 <div id="ajax_crud_new_inp_form" class="panel panel-primary">
@@ -183,6 +193,7 @@ foreach($data as $i=>$ent){
     	<input type="hidden" name="sort_no">
     	<input type="hidden" name="xid" value='' >
     	<input type="hidden" name="dtm" value='' >
+    	<input type="hidden" name="next_dtm" value='' >
     	<input type="hidden" name="level" value=0 >
 	</div>
 	<table><tbody>
@@ -241,6 +252,9 @@ foreach($data as $i=>$ent){
 	</div>
 	<div class="panel-body">
 	<div class="err text-danger"></div>
+	<button type="button"  onclick="editReg();" class="btn btn-success">
+		<span class="glyphicon glyphicon-ok"></span>
+	</button>
 	<table><tbody>
 
 		<!-- CBBXS-1007 -->
@@ -278,6 +292,10 @@ foreach($data as $i=>$ent){
 		<tr><td>学習日時: </td><td>
 			<input type="text" name="dtm" class="valid" value=""  pattern="([0-9]{4})(/|-)([0-9]{1,2})(/|-)([0-9]{1,2}) [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}" title="日時形式（Y-m-d H:i:s）で入力してください(例：2012-12-12 12:12:12)" />
 			<label class="text-danger" for="dtm"></label>
+		</td></tr>
+		<tr><td>次回日時: </td><td>
+			<input type="text" name="next_dtm" class="valid" value=""  pattern="([0-9]{4})(/|-)([0-9]{1,2})(/|-)([0-9]{1,2}) [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}" title="日時形式（Y-m-d H:i:s）で入力してください(例：2012-12-12 12:12:12)" />
+			<label class="text-danger" for="next_dtm"></label>
 		</td></tr>
 		<tr><td>学習レベル: </td><td>
 			<input type="text" name="level" class="valid" value=""  pattern="^[+-]?([0-9]*[.])?[0-9]+$" maxlength="11" title="数値を入力してください" />
@@ -424,14 +442,15 @@ foreach($data as $i=>$ent){
 
 
 <!-- ヘルプ用  -->
-<input type="button" class="btn btn-info btn-sm" onclick="$('#help_x').toggle()" value="ヘルプ" />
-<div id="help_x" class="help_x" style="display:none">
-	<h2>ヘルプ</h2>
-
-	<?php echo $this->element('CrudBase/crud_base_help');?>
-
+<div id="help_x_w" style="display:none">
+	<input type="button" class="btn btn-info btn-sm" onclick="$('#help_x').toggle()" value="ヘルプ" />
+	<div id="help_x" class="help_x" style="display:none">
+		<h2>ヘルプ</h2>
+	
+		<?php echo $this->element('CrudBase/crud_base_help');?>
+	
+	</div>
 </div>
-
 
 
 

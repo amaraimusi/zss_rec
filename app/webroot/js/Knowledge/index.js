@@ -293,19 +293,23 @@ function changeUibyMode(mode){
 	if(mode == 0){
 
 		jQuery('.navbar-fixed-top').hide();
-		tblClmShow('#knowledge_tbl',15,0);// 一覧テーブルの末尾列を隠す
+		tblClmShow('#knowledge_tbl',16,0);// 一覧テーブルの末尾列を隠す
 		
 	}else if(mode == 1){
 
 		jQuery('#knowledge_tbl thead').show();
 		jQuery('#btn_mode_m').show();
 		jQuery('.learn_btn').show();
+		jQuery('#learn_index').show();
 		
 	}else if(mode == 2){
 		
 		jQuery('#func_div').show();
 		jQuery('#knowledge_tbl thead').show();
 		jQuery('#btn_mode_l').show();
+		jQuery('#pwms_w').show();
+		jQuery('#help_x_w').show();
+		jQuery('#learn_index').show();
 		
 	}
 }
