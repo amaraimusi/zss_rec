@@ -266,7 +266,7 @@ class FuText{
 	 * JSONとは完全な互換性はないので注意すること。
 	 * 
 	 * @param string $xml_text XMLテキスト
-	 * @return データ配列
+	 * @return array データ配列
 	 */
 	public function xml2arr($xml_text){
 		// XML解析

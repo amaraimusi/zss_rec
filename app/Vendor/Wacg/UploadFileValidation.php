@@ -15,7 +15,7 @@ class UploadFileValidation{
 	 * @param array $files ファイル群データ( $_FILES )
 	 * @param array $permitExts 許可拡張子リスト
 	 * @param array $permitMimes 許可MIMEリスト
-	 * @param any $option 
+	 * @param array $option 
 	 * - wamei 和名: エラーメッセージに組み込む和名。配列型と文字列型の両方で指定可能。（省略可）
 	 * - mime_check_flg: MIMEチェックフラグ: 0:MIMEチェックしない    1（デフォルト):MIMEチェックを行う
 	 * @return エラー情報。 正常である場合はnullを返す
@@ -62,7 +62,7 @@ class UploadFileValidation{
 	 * @param array $fileData ファイルデータ
 	 * @param array $permitExts 許可拡張子リスト
 	 * @param array $permitMimes 許可MIMEリスト
-	 * @param any $option 
+	 * @param array $option 
 	 * - wamei 和名: エラーメッセージに組み込む和名。配列型と文字列型の両方で指定可能。（省略可）
 	 * - mime_check_flg: MIMEチェックフラグ: 0:MIMEチェックしない    1（デフォルト):MIMEチェックを行う
 	 * @return エラー情報。 正常である場合はnullを返す
@@ -146,7 +146,7 @@ class UploadFileValidation{
 	/**
 	 * オプションのプロパティが未セットなら初期値をセットする
 	 * @param array $option オプション
-	 * @return オプション
+	 * @return array オプション
 	 */
 	private function setOptionIfEmpty($option){
 		if(empty($option)){
@@ -173,9 +173,9 @@ class UploadFileValidation{
 	
 	/**
 	 * 文字列を右側から印文字を検索し、右側の文字を切り出す。
-	 * @param $s 対象文字列
-	 * @param $mark 印文字
-	 * @return 印文字から右側の文字列
+	 * @param string $s 対象文字列
+	 * @param string $mark 印文字
+	 * @return string 印文字から右側の文字列
 	 */
 	private function stringRightRev($s,$mark){
 		if ($s==null || $s==""){

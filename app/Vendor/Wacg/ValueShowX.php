@@ -20,11 +20,11 @@ class ValueShowX{
 	/**
 	 * 値を指定した表記型に変換する。(ctpへの表示用）
 	 *
-	 * @param $ent エンティティ
-	 * @param $key エンティティのキー
-	 * @param $type	0(省略):空対応のみ	1:XSSサニタイズ	2:金額表記	3:有無フラグ用	4:改行文字対応 5:長文字用 6:テキストエリア用
-	 * @param $option:オプションデータ $typeの値によって意味が変わる
-	 * @return 指定表記に変換した値
+	 * @param array $ent エンティティ
+	 * @param string $key エンティティのキー
+	 * @param int $type	0(省略):空対応のみ	1:XSSサニタイズ	2:金額表記	3:有無フラグ用	4:改行文字対応 5:長文字用 6:テキストエリア用
+	 * @param array $option:オプションデータ $typeの値によって意味が変わる
+	 * @return string 指定表記に変換した値
 	 */
 	public function show_x($ent,$key,$type=null,$option=array()){
 

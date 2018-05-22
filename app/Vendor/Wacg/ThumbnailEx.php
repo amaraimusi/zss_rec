@@ -166,7 +166,7 @@ class ThumbnailEx{
 	
 	/**
 	 * 日本語ディレクトリの存在チェック
-	 * @param  $dn	ディレクトリ名
+	 * @param string $dn	ディレクトリ名
 	 * @return boolean	true:存在	false:未存在
 	 */
 	public function is_dir_ex($dn){

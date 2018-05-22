@@ -15,8 +15,8 @@ class CsvDownloader{
 	/**
 	 * マトリクスデータをCSVファイルに変換して、CSVダウンロードを行う。
 	 * 
-	 * @param  $csv_file	CSVファイル名
-	 * @param  $data	マトリクスデータ
+	 * @param string $csv_file CSVファイル名
+	 * @param array  $data マトリクスデータ
 	 */
 	function output($csv_file,$data){
 

@@ -24,7 +24,7 @@ class CopyEx{
 	 * 日本語ファイルに対応
 	 * @param string $sourceFn コピー元ファイル名
 	 * @param string $copyFn コピー先ファイル名
-	 * @param int8 $permission ディレクトリまたはファイルのパーミッション
+	 * @param int $permission ディレクトリまたはファイルのパーミッション
 	 * @return true:コピー成功  false:コピー失敗
 	 */
 	public function copy($sourceFn,$copyFn,$permission = 0777){
@@ -88,7 +88,7 @@ class CopyEx{
 
 	/**
 	 * 日本語ディレクトリの存在チェック
-	 * @param  $dn	ディレクトリ名
+	 * @param string $dn	ディレクトリ名
 	 * @return boolean	true:存在	false:未存在
 	 */
 	public function is_dir_ex($dn){
@@ -103,7 +103,7 @@ class CopyEx{
 
 	/**
 	 * ディレクトリ内のファイルをまとめて削除する。
-	 * @param  $dir_name ファイル削除対象のディレクト名
+	 * @param string $dir_name ファイル削除対象のディレクト名
 	 * @return
 	 */
 	public function dirClear($dir_name){

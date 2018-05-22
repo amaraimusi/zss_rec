@@ -35,7 +35,7 @@ class JsonEx{
 	 * @note
 	 * For jsonEncodeUnEscapeUnicode
 	 * 参考:http://d.hatena.ne.jp/iizukaw/20090422
-	 * @param unknown_type $str
+	 * @param string $str
 	 * @link http://kohkimakimoto.hatenablog.com/entry/2012/05/17/180738
 	 */
 	private function unicode_encode($str)

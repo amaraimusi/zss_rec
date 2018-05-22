@@ -16,9 +16,9 @@ class TxtDownloader{
 	/**
 	 * 行リストをテキストファイルに書き出し、ダウンロードする
 	 * 
-	 * @param  $txt_file	テキストファイル名
-	 * @param  $lineList	行リスト
-	 * @param $utf8_flg UTF-8フラグ
+	 * @param string  $txt_file	テキストファイル名
+	 * @param array $lineList	行リスト
+	 * @param boolean $utf8_flg UTF-8フラグ
 	 */
 	function download($txt_file,$lineList,$utf8_flg=false){
 		

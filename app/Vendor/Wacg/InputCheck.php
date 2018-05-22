@@ -56,8 +56,8 @@ class InputCheck{
 
 	/**
 	 * エンティティをエンティティ情報を元に入力チェックする。
-	 * @param unknown_type $ent　　入力対象エンティティ
-	 * @param $entityInfo	エンティティ情報
+	 * @param array $ent　　入力対象エンティティ
+	 * @param array $entityInfo	エンティティ情報
 	 * @return 入力エラーがあった場合、エラーメッセージを返す。
 	 */
 	function checkEntity($ent,$entityInfo){
@@ -81,8 +81,8 @@ class InputCheck{
 
 	/**
 	 * データの入力チェックを行う。
-	 * @param  $data　入力チェック対象データ
-	 * @param  $entityInfo　エンティティ情報
+	 * @param  array $data　入力チェック対象データ
+	 * @param  array $entityInfo　エンティティ情報
 	 * @param  $dataName　データの名称。エラーメッセージに利用。省略可
 	 * @return エラーメッセージ（入力エラーがあった場合）
 	 */
@@ -139,8 +139,8 @@ class InputCheck{
 
 	/**
 	 * エンティティの入力チェックを行う。
-	 * @param  $ent	エンティティ
-	 * @param  $entInfo	エンティティ情報
+	 * @param array $ent	エンティティ
+	 * @param array $entInfo	エンティティ情報
 	 * @return 入力エラーがない場合、TRUEを返す。
 	 * ※結果はメンバにセットされる。
 	 */
@@ -190,14 +190,14 @@ class InputCheck{
 	/**
 	 * 入力チェックを行う。OKであればtrueを返し、エラーであればfalseを返す。
 	 * エラーメッセージや修正値はメンバにセットされる。
-	 * @param  $val　チェック対象文字列
-	 * @param  $limitLen	制限文字数
-	 * @param  $type	入力チェックの種類。現在はint,double,string,dateに対応。
-	 * @param  $jname　項目の日本語名称
-	 * @param  $req		必須入力フラグ。必須入力にする場合はtrue。省略可能。
-	 * @param  $errMsg	任意のエラーメッセージにする。省略時には規定エラーメッセージを返す。
-	 * @param  $inptype 入力ボックスタイプ。省略時はtextになる。text,radio,select,checkbox,hiddenのいずれかを指定。
-	 * @param  $def 	初期値。select,radio,checkbox系の場合、エラーだった場合この値をセット
+	 * @param string $val　チェック対象文字列
+	 * @param int $limitLen	制限文字数
+	 * @param string $type	入力チェックの種類。現在はint,double,string,dateに対応。
+	 * @param string $jname　項目の日本語名称
+	 * @param boolean $req		必須入力フラグ。必須入力にする場合はtrue。省略可能。
+	 * @param string $errMsg	任意のエラーメッセージにする。省略時には規定エラーメッセージを返す。
+	 * @param string $inptype 入力ボックスタイプ。省略時はtextになる。text,radio,select,checkbox,hiddenのいずれかを指定。
+	 * @param string $def 	初期値。select,radio,checkbox系の場合、エラーだった場合この値をセット
 	 * @return string OKであればtrue,エラーであればfalse
 	 */
 	private function check($val ,$limitLen,$type,$jname,$req=false,$prm_errMsg=null,$inptype='text',$def=null,$minvalue=null,$maxvalue=null){
@@ -316,8 +316,8 @@ class InputCheck{
 
 	/**
 	 * 入力タイプがselect,radio,checkboxの場合、それぞれ専用のエラーメッセージを作成する。
-	 * @param  $inptype　入力タイプ
-	 * @param  $jname	デフォルト文字
+	 * @param string $inptype　入力タイプ
+	 * @param string $jname	デフォルト文字
 	 * @return string
 	 */
 	private function inputboxEachErrMsg($errMsg,$inptype,$jname){
@@ -339,8 +339,8 @@ class InputCheck{
 
 	/**
 	 * 入力タイプがselect,radio,checkboxの場合、デフォルト値をメンバの修正値にセットする。
-	 * @param  $inptype　入力タイプ
-	 * @param  $def		デフォルト文字
+	 * @param string $inptype　入力タイプ
+	 * @param string $def		デフォルト文字
 	 */
 	private function setDefalut($inptype,$def){
 		if('select' == $inptype || 'checkbox' == $inptype || 'radio' == $inptype ){
@@ -350,10 +350,10 @@ class InputCheck{
 
 	/**
 	 * 入力タイプがselect,radio,checkboxの場合、デフォルト値をメンバの修正値にセットする。
-	 * @param  $val　値
-	 * @param  $inptype 入力タイプ
-	 * @param  $def	デフォルト文字
-	 * @return 修正値
+	 * @param string $val　値
+	 * @param string $inptype 入力タイプ
+	 * @param string $def	デフォルト文字
+	 * @return string 修正値
 	 */
 	private function getSyusei($val,$inptype,$def){
 		if('select' == $inptype || 'checkbox' == $inptype || 'radio' == $inptype ){
@@ -389,9 +389,9 @@ class InputCheck{
 	 * 汎用テキストチェック。
 	 * 文字数チェックを行う。
 	 * 必須入力チェックを行う。
-	 * @param $str 対象文字列
-	 * @param $len　制限文字数
-	 * @param $reqFlg 必須入力のチェックも行う場合はtrueとする。
+	 * @param string $str 対象文字列
+	 * @param int $len　制限文字数
+	 * @param boolean $reqFlg 必須入力のチェックも行う場合はtrueとする。
 	 * @return boolean
 	 */
 	function isTextEx1($str,$len,$reqFlg){
@@ -422,8 +422,8 @@ class InputCheck{
 	 * 数値チェックを行う。（小数点、負もＯＫ）
 	 * 文字数チェックを行う。
 	 * 必須入力チェックを行う。
-	 * @param $str 対象文字列
-	 * @param $len　制限文字数
+	 * @param string $str 対象文字列
+	 * @param int $len　制限文字数
 	 * @param $reqFlg 必須入力のチェックも行う場合はtrueとする。
 	 * @return boolean
 	 */
@@ -466,8 +466,8 @@ class InputCheck{
 	 * 数値チェックを行う。（小数点、負は不可）
 	 * 文字数チェックを行う。
 	 * 必須入力チェックを行う。
-	 * @param $str 対象文字列
-	 * @param $len　制限文字数
+	 * @param string $str 対象文字列
+	 * @param int $len　制限文字数
 	 * @param $reqFlg 必須入力のチェックも行う場合はtrueとする。
 	 * @return boolean
 	 */
@@ -496,9 +496,9 @@ class InputCheck{
 	 * 数値チェックを行う。（小数点不可、負はＯＫ）
 	 * 文字数チェックを行う。
 	 * 必須入力チェックを行う。
-	 * @param $str 対象文字列
-	 * @param $len　制限文字数
-	 * @param $reqFlg 必須入力のチェックも行う場合はtrueとする。
+	 * @param string $str 対象文字列
+	 * @param int $len　制限文字数
+	 * @param boolean $reqFlg 必須入力のチェックも行う場合はtrueとする。
 	 * @return boolean
 	 */
 	function isIntEx($str,$len,$reqFlg){
@@ -526,9 +526,9 @@ class InputCheck{
 	 * 日付チェック。閏年対応にも対応。（Y/M/DかY-M-D)
 	 * 文字数チェックを行う。
 	 * 必須入力チェックを行う。
-	 * @param $str 対象文字列
-	 * @param $len　制限文字数 使いません。
-	 * @param $reqFlg 必須入力のチェックも行う場合はtrueとする。
+	 * @param string $str 対象文字列
+	 * @param int $len　制限文字数 使いません。
+	 * @param boolean $reqFlg 必須入力のチェックも行う場合はtrueとする。
 	 * @return boolean
 	 */
 	function isDateEx($str,$len=null,$reqFlg){
@@ -553,9 +553,9 @@ class InputCheck{
 
 	/**
 	 * 時刻チェック。  h-i-s,h:i:s,hhiiss型に対応
-	 * @param $str 対象文字列
-	 * @param $len　制限文字数 使いません。
-	 * @param $reqFlg 必須入力のチェックも行う場合はtrueとする。
+	 * @param string $str 対象文字列
+	 * @param int $len　制限文字数 使いません。
+	 * @param boolean $reqFlg 必須入力のチェックも行う場合はtrueとする。
 	 * @return boolean
 	 */
 	function isTimeEx($str,$len=null,$reqFlg){
@@ -578,8 +578,8 @@ class InputCheck{
 
 	/**
 	 * 日時チェック。 yyyymmddhhiidd,y/m/d h:i:s,y-m-d h:i:s型に対応
-	 * @param $str 対象文字列
-	 * @param $reqFlg 必須入力のチェックも行う場合はtrueとする。
+	 * @param string  $str 対象文字列
+	 * @param boolean $reqFlg 必須入力のチェックも行う場合はtrueとする。
 	 * @return boolean
 	 */
 	function isDatetimeEx($str,$reqFlg){
@@ -602,8 +602,8 @@ class InputCheck{
 	 * 左から印文字を探し、見つかった場所から左側の文字列を返す。（印文字は含めず）
 	 * 検索文字列が存在しない場合は、対象文字列をそのまま返す。
 	 * 検索文字列が先頭にあった場合も、対象文字列をそのまま返す。
-	 * @param  $str　対象文字列
-	 * @param  $mark　印文字列
+	 * @param string  $str　対象文字列
+	 * @param string  $mark　印文字列
 	 * @return string
 	 */
 	function stringLeft($str,$mark){
@@ -620,9 +620,9 @@ class InputCheck{
 	 * メールアドレスチェック。
 	 * 文字数チェックを行う。
 	 * 必須入力チェックを行う。
-	 * @param $str 対象文字列
-	 * @param $len　制限文字数
-	 * @param $reqFlg 必須入力のチェックも行う場合はtrueとする。
+	 * @param string $str 対象文字列
+	 * @param int $len　制限文字数
+	 * @param boolean $reqFlg 必須入力のチェックも行う場合はtrueとする。
 	 * @return boolean
 	 */
 	function isMailEx($str,$len,$reqFlg){
@@ -651,7 +651,7 @@ class InputCheck{
 
 	/**
 	 * メールアドレスチェック
-	 * @param  $str　メールアドレス文字列
+	 * @param string $str　メールアドレス文字列
 	 * @return boolean
 	 */
 	function isMail($str){
@@ -674,7 +674,7 @@ class InputCheck{
 
 	/**
 	 * 日時チェック 閏年対応
-	 * @param  $strDate　日付文字列
+	 * @param string $strDate　日付文字列
 	 * @return boolean　可否
 	 */
 	function isDatetime($strDateTime){
@@ -746,7 +746,7 @@ class InputCheck{
 
 	/**
 	 * hhiiss型の時刻チェック
-	 * @param $v	時刻文字列
+	 * @param string $v	時刻文字列
 	 * @return true:false
 	 */
 	function isTime_hhiiss($v){
@@ -772,7 +772,7 @@ class InputCheck{
 
 	/**
 	 * hhii型の時刻チェック（時分のみ）
-	 * @param $v	時刻文字列
+	 * @param string $v	時刻文字列
 	 * @return true:false
 	 */
 	function isTime_hhii($v){
@@ -798,7 +798,7 @@ class InputCheck{
 
 	/**
 	 * h:i:s,h-i-s,hhiiss型の時刻チェック
-	 * @param $v	時刻文字列
+	 * @param string $v	時刻文字列
 	 * @return true:false
 	 */
 	function isTime_his($v){
@@ -832,9 +832,9 @@ class InputCheck{
 
 	/**
 	 * 時刻の整合性をチェック
-	 * @param  $hou　時
-	 * @param  $min　分
-	 * @param  $sec　秒
+	 * @param int $hou　時
+	 * @param int $min　分
+	 * @param int $sec　秒
 	 * @return boolean　可否
 	 */
 	function checkTime($hou,$min,$sec){
@@ -860,7 +860,7 @@ class InputCheck{
 
 	/**
 	 * 正数チェック
-	 * @param  $str　正数文字列
+	 * @param string  $str　正数文字列
 	 * @return boolean
 	 */
 	function isPNum($str){
@@ -873,7 +873,7 @@ class InputCheck{
 
 	/**
 	 * 整数チェック
-	 * @param  $str　整数文字列
+	 * @param string  $str　整数文字列
 	 * @return boolean
 	 */
 	function isInt($str){
@@ -889,9 +889,9 @@ class InputCheck{
 	 * 値が範囲値ないであるかチェックする。
 	 * valが文字列である場合、falseを返す。
 	 * valが数値且つ、最小値と最大値のいずれかがnullの場合はtrueを返す。
-	 * @param 対象値 $val
-	 * @param 最小値 $minvalue
-	 * @param 最大値 $maxvalue
+	 * @param int 対象値 $val
+	 * @param int 最小値 $minvalue
+	 * @param int 最大値 $maxvalue
 	 */
 	function is_range($val,$minvalue,$maxvalue,$req=false){
 
@@ -939,7 +939,7 @@ class InputCheck{
 
 	/**
 	 * 半角英数字チェック
-	 * @param unknown_type $str
+	 * @param string $str
 	 * @return boolean
 	 */
 	function is_hankakuAlf(&$str){
@@ -953,7 +953,7 @@ class InputCheck{
 	}
 	/**
 	 * 半角英数字「_-」チェック
-	 * @param unknown_type $str
+	 * @param string $str
 	 * @return boolean
 	 */
 	function is_hankakuAlfPlus(&$str){

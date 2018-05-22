@@ -23,7 +23,7 @@ class PlistConverter{
 	 * 型はstring,integer,boolに対応。
 	 * 
 	 * @param array $data データ（多重構造化）
-	 * @return plistの行リスト
+	 * @return array plistの行リスト
 	 */
 	public function convPlistLines($data){
 		$lines = array(); // XMLの行リスト
@@ -60,8 +60,8 @@ class PlistConverter{
 	 * 内部で当メソッドを再帰呼出ししている。
 	 * $linesが出力であるが高速化のため、returnでなく参照引数としている。
 	 *
-	 * @param unknown $data
-	 * @param multi $key キー
+	 * @param array $data
+	 * @param string $key キー
 	 * @param array $lines 行リスト（当関数の出力でもある）
 	 * @param int $deep 深層値
 	 * @param bool $ass_flg 連想配列フラグ  0:通常配列  , 1:連想配列
@@ -154,7 +154,7 @@ class PlistConverter{
 	/**
 	 * BOOL用の要素文字列を作成する
 	 * @param bool $bool ブール値
-	 * @return BOOL要素文字列
+	 * @return string BOOL要素文字列
 	 */
 	private function mekeBoolStr($bool){
 		if(empty($bool)){
@@ -166,7 +166,7 @@ class PlistConverter{
 	
 	/**
 	 * インデントのマッピングを生成する
-	 * @return インデントのマッピング
+	 * @return array インデントのマッピング
 	 */
 	private function createIndentMap(){
 		$ind = array();

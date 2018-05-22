@@ -429,7 +429,7 @@ class CsvIo{
 	 * @version 3.0
 	 * @date 2017-6-17
 	 *
-	 * @param $fp 出力ファイルパス
+	 * @param string $fp 出力ファイルパス
 	 * @param array $data CSVデータ
 	 */
 	public function save($fp,$data){
@@ -733,7 +733,7 @@ class CsvIo{
 	 * 対象列リストで指定の列だけデータを取得できます。
 	 *
 	 * @param $files ←$_FILES["upload_file"]を指定する。
-	 * @param $idents 識別列名リスト
+	 * @param array $idents 識別列名リスト
 	 * @param $targets 対象列リスト(取得対象の列）
 	 * @param $option 'd_quote_del'=true //データからダブルクォーテーションを削除
 	 * @return res:成功可否（boolean)    err_msg:エラーメッセージ（文字列）   data:CSVデータ（2次元配列）
@@ -941,9 +941,9 @@ class CsvIo{
 
 	/**
 	 * 対象列リストから指定列のデータだけ抽出
-	 * @param  $data	CSVデータ
-	 * @param  $targets	対象列リスト
-	 * @return 抽出後のCSVデータ
+	 * @param array $data	CSVデータ
+	 * @param array $targets	対象列リスト
+	 * @return array 抽出後のCSVデータ
 	 */
 	public function exitractByTargetClms($data,$targets){
 
@@ -1056,7 +1056,7 @@ class CsvIo{
 	
 	/**
 	 * ファイル名の拡張子がCSVであるか調べる。
-	 * @param $fn	ファイル名
+	 * @param string $fn	ファイル名
 	 * @return boolean true:CSVである	false:CSVでない
 	 */
 	private function is_exten_csv($fn){
@@ -1089,8 +1089,8 @@ class CsvIo{
 	
 	/**
 	 * 値が配列である場合、列名が別名リストに存在するかチェックする。
-	 * @param $clm   列名
-	 * @param $alias 別名リスト
+	 * @param string $clm   列名
+	 * @param array $alias 別名リスト
 	 */
 	private function checkIdentAlias($clm,$alias){
 	
@@ -1118,8 +1118,8 @@ class CsvIo{
 
 	/**
 	 *  列配列から対象列リストに紐づく列番号を取得する。
-	 * @param  $heads	列配列
-	 * @param  $targets	対象列リスト
+	 * @param array $heads	列配列
+	 * @param array $targets	対象列リスト
 	 */
 	private function getTargetClmNos($heads,$targets){
 
@@ -1167,7 +1167,7 @@ class CsvIo{
 	/**
 	 * データ中からダブルクォートをすべて削除。
 	 * 
-	 * @param  $data CSVデータ (※返り値を兼ねた参照指定型）
+	 * @param array $data CSVデータ (※返り値を兼ねた参照指定型）
 	 * @return void
 	 */
 	private function deleteDoubleQuote(&$data){
@@ -1194,7 +1194,7 @@ class CsvIo{
 	 *
 	 * 本格的にCSVデータを読み込む前に行うバリデーション
 	 * 
-	 * @param $files ファイルアップロード情報 $_FILES["upload_file"]
+	 * @param array $files ファイルアップロード情報 $_FILES["upload_file"]
 	 * @return string $err_msg; エラーなしの場合、nullを返す。
 	 * 
 	 */
