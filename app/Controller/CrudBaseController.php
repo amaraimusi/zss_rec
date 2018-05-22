@@ -11,7 +11,7 @@ App::uses('AppController', 'Controller');
 class CrudBaseController extends AppController {
 
 	///バージョン
-	var $version = "2.3.3";
+	var $version = "2.3.4";
 
 	///デフォルトの並び替え対象フィールド
 	var $defSortFeild='sort_no';
@@ -210,31 +210,31 @@ class CrudBaseController extends AppController {
 		
 		$kjs_json = json_encode($kjs,JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS);
 
-		
-		
 		// セッションへセット（CSVエクスポートで利用）
 		$this->Session->write($this->main_model_name_s.'_kjs',$kjs);
 		
-		//$crudBaseData['']
+		$sql_dump_flg = true; // SQLダンプフラグ   true:SQLダンプを表示（デバッグモードである場合） , false:デバッグモードであってもSQLダンプを表示しない。
+		
 		$crudBaseData = array(
-		    'field_data'=>$active, // アクティブフィールドデータ
-		    'kjs'=>$kjs, // 検索条件情報
-		    'kjs_json'=>$kjs_json, // 検索条件JSON
-		    'def_kjs_json'=>$def_kjs_json, // デフォルト検索情報JSON
-		    'errMsg'=>$errMsg, // エラーメッセージ
-		    'version'=>$this->version, // CrudBaseのバージョン
-		    'userInfo'=>$userInfo, // ユーザー情報
-		    'new_version_chg'=>$new_version_chg, // 新バージョン変更フラグ: 0:通常  ,  1:新バージョンに変更
-		    'debug_mode'=>$debug_mode, // デバッグモード    CakePHPのデバッグモードと同じもの
-		    'csh_ary'=>$csh_ary, // 列表示配列    列表示切替機能用
-		    'csh_json'=>$csh_json, // 列表示配列JSON     列表示切替機能用
-		    'bigDataFlg'=>$bigDataFlg, // 巨大データフラグ    画面に表示する行数が制限数（$big_data_limit）を超えるとONになる。
-		    'big_data_fields'=>$big_data_fields, // 巨大データ用のフィールド情報 (高速化のため列の種類は少なめ）
-		    'pages'=>$pages, // ページネーションパラメータ
-		    'act_flg'=>$act_flg, // アクティブフラグ    null:初期表示 , 1:検索アクション , 2:ページネーションアクション , 3:列ソートアクション
-		    'crudType'=>$crudType, // CRUDタイプ 0:AjaxCrud.js型   1:submit型
-		    'iniFlg'=>$iniFlg, // 初期フラグ（非推奨）    URLクエリで指定する初期状態を表すフラグ
-		    'saveKjFlg'=>$saveKjFlg, // 検索条件保存フラグ（非推奨）
+			'field_data'=>$active, // アクティブフィールドデータ
+			'kjs'=>$kjs, // 検索条件情報
+			'kjs_json'=>$kjs_json, // 検索条件JSON
+			'def_kjs_json'=>$def_kjs_json, // デフォルト検索情報JSON
+			'errMsg'=>$errMsg, // エラーメッセージ
+			'version'=>$this->version, // CrudBaseのバージョン
+			'userInfo'=>$userInfo, // ユーザー情報
+			'new_version_chg'=>$new_version_chg, // 新バージョン変更フラグ: 0:通常  ,  1:新バージョンに変更
+			'debug_mode'=>$debug_mode, // デバッグモード	CakePHPのデバッグモードと同じもの
+			'csh_ary'=>$csh_ary, // 列表示配列	列表示切替機能用
+			'csh_json'=>$csh_json, // 列表示配列JSON	 列表示切替機能用
+			'bigDataFlg'=>$bigDataFlg, // 巨大データフラグ	画面に表示する行数が制限数（$big_data_limit）を超えるとONになる。
+			'big_data_fields'=>$big_data_fields, // 巨大データ用のフィールド情報 (高速化のため列の種類は少なめ）
+			'pages'=>$pages, // ページネーションパラメータ
+			'act_flg'=>$act_flg, // アクティブフラグ	null:初期表示 , 1:検索アクション , 2:ページネーションアクション , 3:列ソートアクション
+			'crudType'=>$crudType, // CRUDタイプ 0:AjaxCrud.js型   1:submit型
+			'iniFlg'=>$iniFlg, // 初期フラグ（非推奨）	URLクエリで指定する初期状態を表すフラグ
+			'saveKjFlg'=>$saveKjFlg, // 検索条件保存フラグ（非推奨）
+			'sql_dump_flg'=>$sql_dump_flg, // SQLダンプフラグ
 		);
 		
 		return $crudBaseData;

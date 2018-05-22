@@ -85,6 +85,10 @@ class KnowledgeController extends CrudBaseController {
 		if($mode==0 || $mode==1){
 			$crudBaseData = $this->rewriteCsh($crudBaseData);
 		}
+		
+		// SQLダンプは閲覧モードのとき、表示しない。
+		$sql_dump_flg = true;
+		if($mode == 0) $sql_dump_flg = false;
 
 		
 		// CBBXS-1020
@@ -103,6 +107,7 @@ class KnowledgeController extends CrudBaseController {
 				'data'=> $data,
 				'data_json'=> $data_json,
 				'mode'=> $mode,
+				'sql_dump_flg'=> $sql_dump_flg,
 		));
 		
 		//当画面系の共通セット

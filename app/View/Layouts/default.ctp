@@ -48,6 +48,11 @@
 		?>
 	</div>
 
-	<?php echo $this->element('sql_dump'); ?>
+	<?php 
+	// SQLダンプ
+	if(!empty($sql_dump_flg)){
+		echo $this->element('sql_dump'); 
+	}
+	?>
 </body>
 </html>
