@@ -5,7 +5,7 @@
  */
 class KnowledgeHelper extends AppHelper{
 	
-	public function tdKlText(&$ent){
+	public function tdKlText(&$ent,&$klCategoryList){
 		$field = 'kl_text';
 		$str_len = 2000;
 		$v = $ent[$field];
@@ -51,11 +51,17 @@ class KnowledgeHelper extends AppHelper{
 			onclick='learnAction(this,{$ent['id']})' class='btn btn-primary btn-xs learn_btn' 
 			style='display:none' /><span class='learned' style='display:none;color:gray'></span>";
 		
+		// カテゴリ　kl_category
+		$kl_category = $ent['kl_category'];
+		$kl_category_name = $klCategoryList[$kl_category];
+		
+		// 出力
 		echo "
 			<td>
 				<input type='hidden' name='{$field}' value='{$v}' />
 				<span class='{$field}'>{$v2}</span>
 				{$contents_url_html}{$doc_html}{$learn_html}
+				&nbsp;<span style='color:#cccccc'>#{$kl_category_name}</span>
 			</td>";
 
 	}

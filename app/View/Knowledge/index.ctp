@@ -22,12 +22,13 @@ $this->assign('script', $this->Html->script($jsList,array('charset'=>'utf-8')));
 	<div id="btn_mode_l" style="display:none"><a href="?a=1&mode=1" class="btn btn-warning btn-xs" >覚えモード</a></div>
 </div>
 
-<div id="learn_index" class="btn-group" style="display:none">
+<div id="learn_index" class="btn-group">
 	<a href="?a=1" class="btn btn-info btn-xs" >全て</a>
-	<a href="?a=1&kj_kl_category=1" class="btn btn-info btn-xs" >霊的</a>
-	<a href="?a=1&kj_kl_category=2" class="btn btn-info btn-xs" >一般</a>
-	<a href="?a=1&kj_kl_category=4" class="btn btn-info btn-xs" >文章</a>
-	<a href="?a=1&kj_kl_category=5" class="btn btn-info btn-xs" >宣教</a>
+	<?php 
+	foreach($klCategoryList as $kl_category => $kl_category_name){
+		echo "<a href='?a=1&kj_kl_category={$kl_category}' class='btn btn-info btn-xs' >{$kl_category_name}</a>";
+	}
+	?>
 </div>
 
 
@@ -130,7 +131,7 @@ foreach($data as $i=>$ent){
 	echo "<tr id=i{$ent['id']}>";
 	// CBBXS-1005
 	$this->CrudBase->tdId($ent,'id',array('checkbox_name'=>'pwms'));
-	$this->Knowledge->tdKlText($ent);
+	$this->Knowledge->tdKlText($ent,$klCategoryList);
 	$this->CrudBase->tdStr($ent,'xid');
 	$this->CrudBase->tdList($ent,'kl_category',$klCategoryList);
 	$this->CrudBase->tdStr($ent,'contents_url');
