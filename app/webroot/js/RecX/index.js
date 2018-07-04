@@ -1,7 +1,6 @@
 
-var learnCounter; // 覚えカウンタークラス
 
-$(() => {
+$(function() {
 	init();//初期化
 });
 
@@ -10,23 +9,18 @@ var crudBase;//AjaxによるCRUD
 var pwms; // ProcessWithMultiSelection.js | 一覧のチェックボックス複数選択による一括処理
 
 /**
- *  心得メイン画面の初期化
+ *  農業記録X画面の初期化
  * 
   * ◇主に以下の処理を行う。
  * - 日付系の検索入力フォームにJQueryカレンダーを組み込む
  * - 列表示切替機能の組み込み
  * - 数値範囲系の検索入力フォームに数値範囲入力スライダーを組み込む
  * 
- * @version 1.2.1
- * @date 2018-5-10 | 2018-7-4
+ * @version 1.2
+ * @date 2015-9-16 | 2016-12-14
  * @author k-uehara
  */
 function init(){
-	
-	// CakePHPによるAjax認証
-	var alwc = new AjaxLoginWithCake();
-	var alwcParam = {'btn_type':1,'form_slt':'#ajax_login_with_cake'}
-	alwc.loginCheckEx(alwcParam);
 	
 	// 検索条件情報を取得する
 	var kjs_json = jQuery('#kjs_json').val();
@@ -34,7 +28,7 @@ function init(){
 	
 	//AjaxによるCRUD
 	crudBase = new CrudBase({
-			'src_code':'knowledge', // 画面コード（スネーク記法)
+			'src_code':'rec_x', // 画面コード（スネーク記法)
 			'kjs':kjs,
 			'ni_tr_place':1,
 		});
@@ -50,10 +44,6 @@ function init(){
 	};
 	
 	// CBBXS-1023
-	// カテゴリリストJSON
-	var kl_category_json = jQuery('#kl_category_json').val();
-	var klCategoryList = JSON.parse(kl_category_json);
-	disFilData['kl_category'] ={'fil_type':'select','option':{'list':klCategoryList}};
 
 	// CBBXE
 
@@ -68,8 +58,8 @@ function init(){
 
 	// 一覧のチェックボックス複数選択による一括処理
 	pwms = new ProcessWithMultiSelection({
-		'tbl_slt':'#knowledge_tbl',
-		'ajax_url':'knowledge/ajax_pwms',
+		'tbl_slt':'#rec_x_tbl',
+		'ajax_url':'rec_x/ajax_pwms',
 			});
 
 	// 新規入力フォームのinput要素にEnterキー押下イベントを組み込む。
@@ -87,26 +77,16 @@ function init(){
 	});
 	
 	
-	// モードの取得
-	var mode = jQuery('#mode').val();
-	changeUibyMode(mode); // ユーザーインターフェース切替
+	// 日付カレンダーのセット
+	// CBBXS-1030
+
+	// CBBXE
 	
-	if(mode==1){
-		learnCounter = new LearnCounter(); // 覚えカウンタークラスの生成
-	}
-	
+	// ■■■□□□■■■□□□■■■□□□■■■
+//	// CSVインポートの初期化  <CrudBase/index.js>
+//	initCsvImportFu('rec_x/csv_fu');
 	
 }
-
-
-/**
- * Ajaxログイン後
- * 
- */
-function callbackLogin(){
-	
-}
-
 
 /**
  * 新規入力フォームを表示
@@ -200,7 +180,7 @@ function resetKjs(exempts){
 function moveClmSorter(){
 	
 	//列並替画面に遷移する <CrudBase:index.js>
-	moveClmSorterBase('knowledge');
+	moveClmSorterBase('rec_x');
 	
 }
 
@@ -283,76 +263,3 @@ function session_clear(){
 	location.href = '?ini=1&sc=1';
 }
 
-
-/**
- * ユーザーインターフェース切替
- * @param mode モード   0:閲覧モード , 1:覚えモード , 2:管理モード
- */
-function changeUibyMode(mode){
-
-	if(mode == 0){
-
-		jQuery('.navbar-fixed-top').hide();
-		tblClmShow('#knowledge_tbl',16,0);// 一覧テーブルの末尾列を隠す
-		
-	}else if(mode == 1){
-
-		jQuery('#knowledge_tbl thead').show();
-		jQuery('#btn_mode_m').show();
-		jQuery('.learn_btn').show();
-		jQuery('#learn_index').show();
-		
-	}else if(mode == 2){
-		
-		jQuery('#func_div').show();
-		jQuery('#knowledge_tbl thead').show();
-		jQuery('#btn_mode_l').show();
-		jQuery('#pwms_w').show();
-		jQuery('#help_x_w').show();
-		jQuery('#learn_index').show();
-		
-	}
-}
-
-
-/**
- * テーブルの列表示を切り替える
- * @param object tbl テーブル要素（セレクタ）
- * @param int 列インデックス（一番左は0)
- * @param int show_flg 表示フラグ 0:非表示 , 1:表示（デフォルト）
- */
-function tblClmShow(tbl,clm_index,show_flg){
-	
-	if(show_flg == null ) show_flg = 1;
-	if(!(tbl instanceof jQuery)) tbl = jQuery(tbl);
-	if(!tbl[0]) return;
-	if(isNaN(clm_index)) return;
-	
-
-	var th = tbl.find("thead tr th").eq(clm_index);
-	if(show_flg == 1){
-		th.show();
-	}else{
-		th.hide();
-	}
-	
-	jQuery.each(tbl.find("tbody tr"), (i,elm) => {
-
-		var td=$(elm).children();
-		if(show_flg == 1){
-			td.eq(clm_index).show();
-		}else{
-			td.eq(clm_index).hide();
-		}
-	});
-
-}
-
-/**
- * 覚えアクション
- * @param object btnElm ボタン要素
- * @param int id 心得ID
- */
-function learnAction(btnElm,id){
-	learnCounter.learnClick(btnElm,id);
-}

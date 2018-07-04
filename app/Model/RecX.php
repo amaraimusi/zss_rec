@@ -1,80 +1,44 @@
 <?php
 App::uses('Model', 'Model');
+App::uses('CrudBase', 'Model');
 
 /**
- * 記録Xのモデル
- * ★概要
+ * 農業記録XのCakePHPモデルクラス
  *
- * ★履歴
- * 2014/8/25	新規作成
- * @author k-uehara
+ * @date 2015-9-16 | 2018-4-24 複製したとき、順番はそのまま
+ * @version 3.0.3
  *
  */
-class RecX extends Model {
+class RecX extends AppModel {
 
-	var $name='RecX';
+	public $name='RecX';
+	
+	// 関連付けるテーブル CBBXS-1040
+	public $useTable = 'recs';
 
-	var $useTable='recs';
+	// CBBXE
 
-	//検索入力のバリデーション
+
+	/// バリデーションはコントローラクラスで定義
 	public $validate = null;
-
-
-	//独自バリデーションルール・新規モードの場合だけ、日にちの存在チェックをする。
-	function checkOnly(){
-		//チェックしたいルールを書く
-
-
-		$mode=$_POST['data']['RecX']['mode'];
-		if($mode=='edit'){
-			return true;
-		}else if($mode=='new'){
-			if (!empty($this->data['RecX']['sale_date'])){
-
-				$sale_date=$this->data['RecX']['sale_date'];
-
-				//存在するか確認
-				$count = $this->find('count',
-						array('conditions' => array('sale_date' => $sale_date)
-						));
-
-				//1件でもあればfalseを返す
-				return $count == 0;
-			}else{
-				return false;
-			}
-		}else{
-			return true;
-		}
-
-
+	
+	
+	public function __construct() {
+		parent::__construct();
+		
+		// CrudBaseロジッククラスの生成
+		if(empty($this->CrudBase)) $this->CrudBase = new CrudBase();
 	}
-
-
-	function findEntity($id){
-
-
-		//DBから取得するフィールド
-		$fields=array(
-			'id',
-			'rec_title',
-			'rec_date',
-			'note',
-			'category_id2',
-			'category_id1',
-			'tags',
-			'photo_fn',
-			'photo_dir',
-			'ref_url',
-			'nendo',
-			'sort_no',
-			'no_a',
-			'no_b',
-			'parent_id',
-			'publish',
-
-		);
-
+	
+	/**
+	 * 農業記録Xエンティティを取得
+	 *
+	 * 農業記録Xテーブルからidに紐づくエンティティを取得します。
+	 *
+	 * @param int $id 農業記録XID
+	 * @return array 農業記録Xエンティティ
+	 */
+	public function findEntity($id){
 
 		$conditions='id = '.$id;
 
@@ -82,69 +46,60 @@ class RecX extends Model {
 		$data = $this->find(
 				'first',
 				Array(
-					'fields'=>$fields,
-					'conditions' => $conditions,
+						'conditions' => $conditions,
 				)
 		);
 
-
-		$ent=$data['RecX'];
+		$ent=array();
+		if(!empty($data)){
+			$ent=$data['RecX'];
+		}
+		
 
 
 
 		return $ent;
 	}
 
-
-	function findData($kjs,$page_no,$limit,$findOrder){
-		
-		//SELECT情報
-		$fields=array(
-				'RecX.*',
-				'Probe.probe_name',
-				'Probe.probe_note',
-		);
-
+	/**
+	 * 農業記録X画面の一覧に表示するデータを、農業記録Xテーブルから取得します。
+	 * 
+	 * @note
+	 * 検索条件、ページ番号、表示件数、ソート情報からDB（農業記録Xテーブル）を検索し、
+	 * 一覧に表示するデータを取得します。
+	 * 
+	 * @param array $kjs 検索条件情報
+	 * @param int $page_no ページ番号
+	 * @param int $row_limit 表示件数
+	 * @param string sort ソートフィールド
+	 * @param int sort_desc ソートタイプ 0:昇順 , 1:降順
+	 * @return array 農業記録X画面一覧のデータ
+	 */
+	public function findData($kjs,$page_no,$row_limit,$sort_field,$sort_desc){
 
 		//条件を作成
 		$conditions=$this->createKjConditions($kjs);
-
 		
-		//ORDERのデフォルトをセット
-		if(empty($findOrder)){
-			$findOrder='RecX.rec_date';
-		}
+		// オフセットの組み立て
+		$offset=null;
+		if(!empty($row_limit)) $offset = $page_no * $row_limit;
 		
+		// ORDER文の組み立て
+		$order = $sort_field;
+		if(empty($order)) $order='sort_no';
+		if(!empty($sort_desc)) $order .= ' DESC';
 		
-		//JOIN情報
-		$joins = array(
-				array(
-						'type'       => 'left',
-						'table'      => 'probes',
-						'alias'      => 'Probe',
-						'conditions' => array(
-								'RecX.probe_id = Probe.id',
-						),
-				),
-	
-		);
-		
+		$option=array(
+            'conditions' => $conditions,
+            'limit' =>$row_limit,
+            'offset'=>$offset,
+            'order' => $order,
+        );
 		
 		//DBからデータを取得
-		$data = $this->find(
-				'all',
-				Array(
-					'fields' => $fields,
-					'conditions' => $conditions,
-					'joins'=>$joins,
-					'limit' =>$limit,
-					'offset'=>$page_no*$limit,
-					'order' => $findOrder,
-				)
-		);
+		$data = $this->find('all',$option);
 
-	
-		//2次元配列に構造変換する。
+		//データ構造を変換（2次元配列化）
 		$data2=array();
 		foreach($data as $i=>$tbl){
 			foreach($tbl as $ent){
@@ -154,78 +109,129 @@ class RecX extends Model {
 			}
 		}
 		
-		// ■■■□□□■■■□□□■■■□□□
-// 		if(!empty($data)){
-// 			$data=Hash::extract($data, '{n}.RecX');
-// 		}
-
-
 		return $data2;
+	}
+	
+	
+	/**
+	 * 一覧データを取得する
+	 */
+	public function findData2(&$crudBaseData){
+
+		$kjs = $crudBaseData['kjs'];//検索条件情報
+		$pages = $crudBaseData['pages'];//ページネーション情報
+
+		$data = $this->findData($kjs,$pages['page_no'],$pages['row_limit'],$pages['sort_field'],$pages['sort_desc']);
+		
+		return $data;
+	}
+
+	
+	
+	/**
+	 * SQLのダンプ
+	 * @param  $option
+	 */
+	private function dumpSql($option){
+		$dbo = $this->getDataSource();
+		
+		$option['table']=$dbo->fullTableName($this->RecX);
+		$option['alias']='RecX';
+		
+		$query = $dbo->buildStatement($option,$this->RecX);
+		
+		Debugger::dump($query);
 	}
 
 
 
 	/**
 	 * 検索条件情報からWHERE情報を作成。
-	 * @param  $kjs	検索条件情報
-	 * @return WHERE情報
+	 * @param array $kjs	検索条件情報
+	 * @return string WHERE情報
 	 */
 	private function createKjConditions($kjs){
 
 		$cnds=null;
-
-
-		if(!empty($kjs['kj_rec_date1'])){
-			$cnds[]="RecX.rec_date >= '{$kjs['kj_rec_date1']}'";
+		
+		$this->CrudBase->sql_sanitize($kjs); // SQLサニタイズ
+		
+		// CBBXS-1003
+		if(!empty($kjs['kj_id']) || $kjs['kj_id'] ==='0' || $kjs['kj_id'] ===0){
+			$cnds[]="RecX.id = {$kjs['kj_id']}";
 		}
-
-		if(!empty($kjs['kj_rec_date2'])){
-			$cnds[]="RecX.rec_date <= '{$kjs['kj_rec_date2']}'";
-		}
-
-		if(!empty($kjs['kj_category_id1'])){
-			$cnds[]="RecX.category_id1 >= '{$kjs['kj_category_id1']}'";
-		}
-
-		if(!empty($kjs['kj_category_id2'])){
-			$cnds[]="RecX.category_id2 >= '{$kjs['kj_category_id2']}'";
-		}
-
 		if(!empty($kjs['kj_rec_title'])){
 			$cnds[]="RecX.rec_title LIKE '%{$kjs['kj_rec_title']}%'";
 		}
-
+		if(!empty($kjs['kj_rec_date'])){
+			$kj_rec_date = $kjs['kj_rec_date'];
+			$dtInfo = $this->CrudBase->guessDatetimeInfo($kj_rec_date);
+			$cnds[]="DATE_FORMAT(RecX.rec_date,'{$dtInfo['format_mysql_a']}') = DATE_FORMAT('{$dtInfo['datetime_b']}','{$dtInfo['format_mysql_a']}')";
+		}
 		if(!empty($kjs['kj_note'])){
 			$cnds[]="RecX.note LIKE '%{$kjs['kj_note']}%'";
 		}
-
+		if(!empty($kjs['kj_category_id2']) || $kjs['kj_category_id2'] ==='0' || $kjs['kj_category_id2'] ===0){
+			$cnds[]="RecX.category_id2 = {$kjs['kj_category_id2']}";
+		}
+		if(!empty($kjs['kj_category_id1']) || $kjs['kj_category_id1'] ==='0' || $kjs['kj_category_id1'] ===0){
+			$cnds[]="RecX.category_id1 = {$kjs['kj_category_id1']}";
+		}
 		if(!empty($kjs['kj_tags'])){
 			$cnds[]="RecX.tags LIKE '%{$kjs['kj_tags']}%'";
 		}
-
-		if(!empty($kjs['kj_tag_id'])){
-			$str_rec_ids=$this->getIdsByTagId($kjs['kj_tag_id']);
-			if(!empty($str_rec_ids)){
-				$cnds[]="RecX.id IN ({$str_rec_ids})";
-			}
+		if(!empty($kjs['kj_photo_fn'])){
+			$cnds[]="RecX.photo_fn LIKE '%{$kjs['kj_photo_fn']}%'";
+		}
+		if(!empty($kjs['kj_photo_dir'])){
+			$cnds[]="RecX.photo_dir LIKE '%{$kjs['kj_photo_dir']}%'";
+		}
+		if(!empty($kjs['kj_ref_url'])){
+			$cnds[]="RecX.ref_url LIKE '%{$kjs['kj_ref_url']}%'";
+		}
+		if(!empty($kjs['kj_nendo1'])){
+			$cnds[]="RecX.nendo >= {$kjs['kj_nendo1']}";
+		}
+		if(!empty($kjs['kj_nendo2'])){
+			$cnds[]="RecX.nendo <= {$kjs['kj_nendo2']}";
+		}
+		if(!empty($kjs['kj_sort_no']) || $kjs['kj_sort_no'] ==='0' || $kjs['kj_sort_no'] ===0){
+			$cnds[]="RecX.sort_no = {$kjs['kj_sort_no']}";
+		}
+		if(!empty($kjs['kj_no_a1'])){
+			$cnds[]="RecX.no_a >= {$kjs['kj_no_a1']}";
+		}
+		if(!empty($kjs['kj_no_a2'])){
+			$cnds[]="RecX.no_a <= {$kjs['kj_no_a2']}";
+		}
+		if(!empty($kjs['kj_no_b1'])){
+			$cnds[]="RecX.no_b >= {$kjs['kj_no_b1']}";
+		}
+		if(!empty($kjs['kj_no_b2'])){
+			$cnds[]="RecX.no_b <= {$kjs['kj_no_b2']}";
+		}
+		if(!empty($kjs['kj_parent_id']) || $kjs['kj_parent_id'] ==='0' || $kjs['kj_parent_id'] ===0){
+			$cnds[]="RecX.parent_id = {$kjs['kj_parent_id']}";
+		}
+		if(!empty($kjs['kj_probe_id']) || $kjs['kj_probe_id'] ==='0' || $kjs['kj_probe_id'] ===0){
+			$cnds[]="RecX.probe_id = {$kjs['kj_probe_id']}";
+		}
+		if(!empty($kjs['kj_publish']) || $kjs['kj_publish'] ==='0' || $kjs['kj_publish'] ===0){
+			$cnds[]="RecX.publish = {$kjs['kj_publish']}";
+		}
+		if(!empty($kjs['kj_create_date'])){
+			$kj_create_date = $kjs['kj_create_date'];
+			$dtInfo = $this->CrudBase->guessDatetimeInfo($kj_create_date);
+			$cnds[]="DATE_FORMAT(RecX.create_date,'{$dtInfo['format_mysql_a']}') = DATE_FORMAT('{$dtInfo['datetime_b']}','{$dtInfo['format_mysql_a']}')";
+		}
+		if(!empty($kjs['kj_update_date'])){
+			$kj_update_date = $kjs['kj_update_date'];
+			$dtInfo = $this->CrudBase->guessDatetimeInfo($kj_update_date);
+			$cnds[]="DATE_FORMAT(RecX.update_date,'{$dtInfo['format_mysql_a']}') = DATE_FORMAT('{$dtInfo['datetime_b']}','{$dtInfo['format_mysql_a']}')";
 		}
 
-		if(!empty($kjs['kj_no_a'])){
-			$cnds[]="RecX.no_a = '{$kjs['kj_no_a']}'";
-		}
-
-		if(!empty($kjs['kj_no_b'])){
-			$cnds[]="RecX.no_b = '{$kjs['kj_no_b']}'";
-		}
-
-		if(!empty($kjs['kj_probe_id'])){
-			$cnds[]="RecX.probe_id = '{$kjs['kj_probe_id']}'";
-		}
+		// CBBXE
 		
-
-
-		$cnds[]="RecX.publish = 1";
-
 		$cnd=null;
 		if(!empty($cnds)){
 			$cnd=implode(' AND ',$cnds);
@@ -236,97 +242,56 @@ class RecX extends Model {
 	}
 
 	/**
-	 * タグＩＤから記録ＩＤ連結を取得
-	 * 
-	 * @param $tag_id　タグＩＤ
-	 * @return 記録ＩＤ連結
+	 * エンティティをDB保存
+	 *
+	 * 農業記録Xエンティティを農業記録Xテーブルに保存します。
+	 *
+	 * @param array $ent 農業記録Xエンティティ
+	 * @param array $option オプション
+	 *  - form_type フォーム種別  new_inp:新規入力 , copy:複製 , edit:編集
+	 *  - ni_tr_place 新規入力追加場所フラグ 0:末尾 , 1:先頭
+	 * @return array 農業記録Xエンティティ（saveメソッドのレスポンス）
 	 */
-	private function getIdsByTagId($tag_id){
-		if(empty($this->RecTag)){
-			App::uses('RecTag','Model');
-			$this->RecTag=new RecTag();
+	public function saveEntity($ent,$option=array()){
+
+		// 新規入力であるなら新しい順番をエンティティにセットする。
+		if($option['form_type']=='new_inp' ){
+			if(empty($option['ni_tr_place'])){
+				$ent['sort_no'] = $this->CrudBase->getLastSortNo($this); // 末尾順番を取得する
+			}else{
+				$ent['sort_no'] = $this->CrudBase->getFirstSortNo($this); // 先頭順番を取得する
+			}
 		}
-
-		//SELECT情報
-		$fields=array(
-			'rec_id',
-
-		);
-
-		//WHERE情報
-		$conditions=array(
-			"tag_id = '{$tag_id}'",
-		);
-
-
-		//オプション
-		$option=array(
-			'fields'=>$fields,
-			'conditions'=>$conditions,
-			'recursive' => -1,
-		);
-
-		//DBから取得
-		$data=$this->RecTag->find('list',$option);
-
-		$str=null;
 		
-		if(!empty($data)){
 
-			$str = join(',',$data);
-		}
+		//DBに登録('atomic' => false　トランザクションなし。saveでSQLサニタイズされる）
+		$ent = $this->save($ent, array('atomic' => false,'validate'=>false));
 
-		return $str;
+		//DBからエンティティを取得
+		$ent = $this->find('first',
+				array(
+						'conditions' => "id={$ent['RecX']['id']}"
+				));
+
+		$ent=$ent['RecX'];
+		if(empty($ent['delete_flg'])) $ent['delete_flg'] = 0;
+
+		return $ent;
 	}
+
 	
 
 
 	/**
-	 * エンティティをDBに登録する。
-	 * @param  $ent
+	 * 全データ件数を取得
+	 *
+	 * limitによる制限をとりはらった、検索条件に紐づく件数を取得します。
+	 *  全データ件数はページネーション生成のために使われています。
+	 *
+	 * @param array $kjs 検索条件情報
+	 * @return int 全データ件数
 	 */
-	public function saveEntity($ent){
-		//SQLインジェクションのサニタイズ
-		App::uses('Sanitize', 'Utility');
-		$ent = Sanitize::clean($ent, array('encode' => false));
-
-		//DBに登録
-		$rets = $this->saveAll($ent, array('atomic' => false,'validate'=>'true'));
-
-
-		return $rets;
-	}
-
-
-
-	//新IDを取得
-	function findNewId(){
-
-
-		//DBから取得するフィールド
-		$fields=array('MAX(id) AS new_id');
-
-
-		//DBからデータを取得
-		$data = $this->find(
-				'first',
-				Array(
-					'fields'=>$fields,
-
-				)
-		);
-
-		$newId=$data[0]['new_id'];
-		$newId++;
-
-		return $newId;
-	}
-
-
-
-	//全データ数を取得
-	function findDataCnt($kjs){
-
+	public function findDataCnt($kjs){
 
 		//DBから取得するフィールド
 		$fields=array('COUNT(id) AS cnt');
@@ -336,159 +301,19 @@ class RecX extends Model {
 		$data = $this->find(
 				'first',
 				Array(
-					'fields'=>$fields,
-					'conditions' => $conditions,
-
+						'fields'=>$fields,
+						'conditions' => $conditions,
 				)
 		);
 
-		$cnt=0;
-		if(!empty($data)){
-			$cnt=$data[0]['cnt'];
-		}
-
-
+		$cnt=$data[0]['cnt'];
 		return $cnt;
 	}
-
-	//IDに紐づくレコードを削除する。
-	public function del($id){
-		if(!empty($id)){
-			$this->delete($id,array('atomic' => true));
-		}
-	}
-
-
-
-	/**
-	 * 最終行の日付と、その20件前行の日付を取得
-	 * @param $kjs	検索条件情報
-	 * @return
-	 */
-	public function getFirstDates($kjs){
-
-				//SELECT情報
-				$fields=array(
-					'id',
-					'rec_date',
-
-				);
-
-		//条件を作成
-		$limit=30;
-		$conditions=$this->createKjConditions($kjs,$limit);
-
-		//ORDERのデフォルトをセット
-		if(empty($findOrder)){
-			$findOrder='RecX.rec_date DESC';
-		}
-
-		//DBからデータを取得
-		$data = $this->find(
-				'all',
-				Array(
-						//'fields' => $fields,
-						'conditions' => $conditions,
-						'limit' =>$limit,
-						'order' => $findOrder,
-				)
-		);
-
-		$d1=null;
-		$d2=null;
-		$lastIndex=count($data)-1;
-		if($lastIndex >= 1){
-			$d2=$data[0]['RecX']['rec_date'];
-			$d1=$data[$lastIndex]['RecX']['rec_date'];
-		}
-
-
-		$ret=array('d1'=>$d1,'d2'=>$d2);
-
-
-		return $ret;
-	}
-
-
-
 	
 	
-	/**
-	 * 季節ボタンデータを取得する
-	 * @param string/date $first_date 最初回日付
-	 * @return 季節ボタンデータ
-	 */
-	public function getSeasonBtnData($first_date){
-	
-		$end_date = date('Y-m-d');
-		$month_range=3;
-		$format='Y-m-d H:i:s';
-		$dates = $this->splitByMonthRange($first_date,$end_date,$month_range,$format);
+	// CBBXS-1021
 
-		$data = array();
-		foreach($dates as $d){
-			$u=strtotime($d);
-			
-			$m = intval(date('m', $u));
-			$seasonName = $this->getSeasonNameByMont($m);
-			$y = date('Y', $u);
-			$label_name=$y.$seasonName;
-			$name = 'season'.date('Y-m-d',$u);
-			$ent = array(
-					'label_name' => $label_name,
-					'f_date'=> $d,
-					'name' => $name,
-			);
-			$data[] = $ent;
-			
-		}
-		
-		return $data;
-		
-	}
-	
-	/**
-	 * 月から季節を取得する
-	 */
-	private function getSeasonNameByMont($m){
-		if($m>=1 && $m<=3){
-			return '冬';
-		}
-		if($m>=4 && $m<=6){
-			return '春';
-		}
-		if($m>=7 && $m<=9){
-			return '夏';
-		}
-		if($m>=10 && $m<=12){
-			return '秋';
-		}
-		return 'none';
-	}
-	
-	
-	
-	/**
-	 * 期間を指定月間で分割
-	 *
-	 * @param string/date $first_date 期間の開始日(月の第一日）
-	 * @param string/date  $end_date 期間の終了日
-	 * @param int  $month_range 指定月間
-	 * @param string $format 返りデータの日付フォーマット（省略可、秒単位まで指定可）
-	 * @return array 分割日付リスト
-	 */
-	function splitByMonthRange($first_date,$end_date,$month_range,$format='Y-m-d'){
-		$start = new DateTime($first_date);
-		$end = new DateTime($end_date);
-		$interval = DateInterval::createFromDateString($month_range.' month');
-		$period = new DatePeriod($start,$interval,$end);
-		$dates = array();
-		foreach($period as $d){
-			$dates[] = $d->format($format);
-		}
-		return $dates;
-	}
-	
-	
-	
+	// CBBXE
+
+
 }
