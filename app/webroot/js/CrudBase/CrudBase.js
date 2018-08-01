@@ -14,8 +14,8 @@
  * td内部へのSetやGetは、先頭要素とtd直下にしか対応していない。
  * 複雑なtd内部にも対応するとなるとコールバックを検討しなければならない。
  * 
- * @date 2016-9-21 | 2018-4-20
- * @version 2.2.1
+ * @date 2016-9-21 | 2018-8-2
+ * @version 2.2.3
  * 
  * @param object param
  *  - src_code	画面コード（スネーク記法）
@@ -39,7 +39,7 @@
  *  - callback_after_file_change(e,field,form_type,fileName)	ファイルチェンジ後のコールバック
  *  - form_z_index	重なり順序(cssのz-indexと同じ)
  *  - valid_msg_slt	バリデーションメッセージセレクタ
- *  - auto_close_flg	自動閉フラグ	0:自動で閉じない  1:フォームの外側をクリックすると自動的に閉じる（デフォルト）
+ *  - auto_close_flg	自動閉フラグ	0:自動で閉じない（デフォルト）  1:フォームの外側をクリックすると自動的に閉じる
  *  - ni_tr_place	新規入力追加場所フラグ 0:末尾 , 1:先頭
  *  @param array fieldData フィールドデータ（フィールド名の配列。フィード名の順番は列並びと一致していること）
  */
@@ -523,6 +523,7 @@ class CrudBase extends CrudBaseBase{
 		var reg_param_json = JSON.stringify(regParam);
 		fd.append('reg_param_json',reg_param_json);
 
+		
 		jQuery.ajax({
 			type: "post",
 			url: this.param.edit_reg_url,
@@ -538,7 +539,7 @@ class CrudBase extends CrudBaseBase{
 				var ent =jQuery.parseJSON(str_json);//パース
 
 			}catch(e){
-				alert('エラー');
+				alert('エラー:' + str_json);
 				console.log(str_json);
 				jQuery("#err").html(str_json);
 			}

@@ -3,13 +3,13 @@ App::uses('CrudBaseController', 'Controller');
 App::uses('PagenationForCake', 'Vendor/Wacg');
 
 /**
- * 日誌A
+ * 日誌Ａ
  * 
- * 日誌A画面では日誌A一覧を検索閲覧、および編集ができます。
+ * @note
+ * 日誌Ａ画面では日誌Ａ一覧を検索閲覧、編集など多くのことができます。
  * 
- * 
- * @date 2015/09/16	新規作成
- * @author k-uehara
+ * @date 2015-9-16 | 2018-7-14
+ * @version 4.0
  *
  */
 class DiaryAController extends CrudBaseController {
@@ -18,7 +18,7 @@ class DiaryAController extends CrudBaseController {
 	public $name = 'DiaryA';
 	
 	/// 使用しているモデル
-	public $uses = array('DiaryA','CrudBase','AnyJson');
+	public $uses = array('DiaryA','CrudBase');
 	
 	/// オリジナルヘルパーの登録
 	public $helpers = array('CrudBase');
@@ -27,10 +27,7 @@ class DiaryAController extends CrudBaseController {
 	public $defSortFeild='DiaryA.diary_date';
 	
 	/// デフォルトソートタイプ	  0:昇順 1:降順
-	public $defSortType=1;
-	
-	/// 検索条件のセッション保存フラグ
-	public $kj_session_flg=true;
+	public $defSortType = 1;
 	
 	/// 検索条件情報の定義
 	public $kensakuJoken=array();
@@ -53,6 +50,11 @@ class DiaryAController extends CrudBaseController {
 
 
 	public function beforeFilter() {
+
+// 		// 未ログイン中である場合、未認証モードの扱いでページ表示する。
+// 		if(empty($this->Auth->user())){
+// 			$this->Auth->allow(); // 未認証モードとしてページ表示を許可する。
+// 		}
 	
 		parent::beforeFilter();
 	
@@ -63,33 +65,38 @@ class DiaryAController extends CrudBaseController {
 	/**
 	 * indexページのアクション
 	 *
-	 * indexページでは日誌A一覧を検索閲覧できます。
+	 * indexページでは日誌Ａ一覧を検索閲覧できます。
 	 * 一覧のidから詳細画面に遷移できます。
 	 * ページネーション、列名ソート、列表示切替、CSVダウンロード機能を備えます。
 	 */
 	public function index() {
 		
-
-		$res=$this->index_before('DiaryA',$this->request->data);//indexアクションの共通先処理(CrudBaseController)
-		$kjs=$res['kjs'];//検索条件情報
-		$paginations=$res['paginations'];//ページネーション情報
+		// CrudBase共通処理（前）
+		$crudBaseData = $this->indexBefore('DiaryA');//indexアクションの共通先処理(CrudBaseController)
 		
-		// SQLインジェクション対策用のサニタイズをする。
-		App::uses('Sanitize', 'Utility');
-		$kjs = Sanitize::clean($kjs, array('encode' => false));
-
 		//一覧データを取得
-		$data=$this->DiaryA->findData($kjs,$paginations['page_no'],$paginations['limit'],$paginations['find_order']);
+		$data = $this->DiaryA->findData2($crudBaseData);
 
-		$res=$this->index_after($kjs);//indexアクションの共通後処理
+		// CrudBase共通処理（後）
+		$crudBaseData = $this->indexAfter($crudBaseData);//indexアクションの共通後処理
 		
+		// CBBXS-1020
 
+		// CBBXE
 		
+// 		// ■■■□□□■■■□□□■■■□□□テスト
+// 		App::uses('DbExport','Vendor/Wacg');
+// 		App::uses('DaoForCake','Model');
+// 		$dao = new DaoForCake();
+// 		$dbExp = new DbExport();
+// 		$dbExp->test($dao);
 		
-
+	
+		
+		$this->set($crudBaseData);
 		$this->set(array(
-				'title_for_layout'=>'日誌A',
-				'data'=> $data,
+			'title_for_layout'=>'日誌Ａ',
+			'data'=> $data,
 		));
 		
 		//当画面系の共通セット
@@ -101,7 +108,7 @@ class DiaryAController extends CrudBaseController {
 	/**
 	 * 詳細画面
 	 * 
-	 * 日誌A情報の詳細を表示します。
+	 * 日誌Ａ情報の詳細を表示します。
 	 * この画面から入力画面に遷移できます。
 	 * 
 	 */
@@ -112,7 +119,7 @@ class DiaryAController extends CrudBaseController {
 	
 
 		$this->set(array(
-				'title_for_layout'=>'日誌A・詳細',
+				'title_for_layout'=>'日誌Ａ・詳細',
 				'ent'=>$ent,
 		));
 		
@@ -133,65 +140,69 @@ class DiaryAController extends CrudBaseController {
 
 
 
-	/**
-	 * 入力画面
-	 * 
-	 * 入力フォームにて値の入力が可能です。バリデーション機能を実装しています。
-	 * 
-	 * URLクエリにidが付属する場合は編集モードになります。
-	 * idがない場合は新規入力モードになります。
-	 * 
-	 */
-	public function edit() {
-
-		$res=$this->edit_before('DiaryA');
-		$ent=$res['ent'];
-
-		$this->set(array(
-				'title_for_layout'=>'日誌A・編集',
-				'ent'=>$ent,
-		));
+// 	/**
+// 	 * 入力画面
+// 	 * 
+// 	 * 入力フォームにて値の入力が可能です。バリデーション機能を実装しています。
+// 	 * 
+// 	 * URLクエリにidが付属する場合は編集モードになります。
+// 	 * idがない場合は新規入力モードになります。
+// 	 * 
+// 	 */
+// 	public function edit() {
 		
-		//当画面系の共通セット
-		$this->setCommon();
+// 		if(empty($this->Auth->user())) return 'Error:login is needed.';// 認証中でなければエラー
+// 		$res=$this->edit_before('DiaryA');
+// 		$ent=$res['ent'];
 
-	}
+// 		$this->set(array(
+// 				'title_for_layout'=>'日誌Ａ・編集',
+// 				'ent'=>$ent,
+// 		));
+		
+// 		//当画面系の共通セット
+// 		$this->setCommon();
+
+// 	}
 	
-	 /**
-	 * 登録完了画面
-	 * 
-	 * 入力画面の更新ボタンを押し、DB更新に成功した場合、この画面に遷移します。
-	 * 入力エラーがある場合は、入力画面へ、エラーメッセージと共にリダイレクトで戻ります。
-	 */
-	public function reg(){
-		$res=$this->reg_before('DiaryA');
-		$ent=$res['ent'];
+// 	 /**
+// 	 * 登録完了画面
+// 	 * 
+// 	 * 入力画面の更新ボタンを押し、DB更新に成功した場合、この画面に遷移します。
+// 	 * 入力エラーがある場合は、入力画面へ、エラーメッセージと共にリダイレクトで戻ります。
+// 	 */
+// 	public function reg(){
 		
-		$regMsg="<p id='reg_msg'>更新しました。</p>";
-
-		//オリジナルバリデーション■■■□□□■■■□□□■■■□□□
-		//$xFlg=$this->validDiaryA();
-		$xFlg=true;
-		if($xFlg==false){
-			//エラーメッセージと一緒に編集画面へ、リダイレクトで戻る。
-			$this->errBackToEdit("オリジナルバリデーションのエラー");
-		}
 		
-		//★DB保存
-		$this->DiaryA->begin();//トランザクション開始
-		$ent=$this->DiaryA->saveEntity($ent);//登録
-		$this->DiaryA->commit();//コミット
-
-		$this->set(array(
-				'title_for_layout'=>'日誌A・登録完了',
-				'ent'=>$ent,
-				'regMsg'=>$regMsg,
-		));
+// 		if(empty($this->Auth->user())) return 'Error:login is needed.';// 認証中でなければエラー
+// 		$res=$this->reg_before('DiaryA');
+// 		$ent=$res['ent'];
 		
-		//当画面系の共通セット
-		$this->setCommon();
+// 		$regMsg="<p id='reg_msg'>更新しました。</p>";
 
-	}
+// 		//オリジナルバリデーション■■■□□□■■■□□□■■■□□□
+// 		//$xFlg=$this->validDiaryA();
+// 		$xFlg=true;
+// 		if($xFlg==false){
+// 			//エラーメッセージと一緒に編集画面へ、リダイレクトで戻る。
+// 			$this->errBackToEdit("オリジナルバリデーションのエラー");
+// 		}
+		
+// 		//★DB保存
+// 		$this->DiaryA->begin();//トランザクション開始
+// 		$ent=$this->DiaryA->saveEntity($ent);//登録
+// 		$this->DiaryA->commit();//コミット
+
+// 		$this->set(array(
+// 				'title_for_layout'=>'日誌Ａ・登録完了',
+// 				'ent'=>$ent,
+// 				'regMsg'=>$regMsg,
+// 		));
+		
+// 		//当画面系の共通セット
+// 		$this->setCommon();
+
+// 	}
 	
 	
 	
@@ -205,45 +216,59 @@ class DiaryAController extends CrudBaseController {
 	 */
 	public function ajax_reg(){
 		App::uses('Sanitize', 'Utility');
-	
 		$this->autoRender = false;//ビュー(ctp)を使わない。
-	
+		$errs = array(); // エラーリスト
+		
+		// 認証中でなければエラー
+		if(empty($this->Auth->user())){
+			return 'Error:login is needed.';// 認証中でなければエラー
+		}
+		
+		// 未ログインかつローカルでないなら、エラーアラートを返す。
+		if(empty($this->Auth->user()) && $_SERVER['SERVER_NAME']!='localhost'){
+			return '一般公開モードでは編集登録はできません。';
+		}
+		
 		// JSON文字列をパースしてエンティティを取得する
 		$json=$_POST['key1'];
 		$ent = json_decode($json,true);
-	
-	
-// 		// アップロードファイルが存在すればエンティティにセットする。
-// 		$upload_file = null;
-// 		if(!empty($_FILES["upload_file"])){
-// 			$upload_file = $_FILES["upload_file"]["name"];
-// 			$ent['diary_a_fn'] = $upload_file;
-// 		}
-	
+		
+		// 登録パラメータ
+		$reg_param_json = $_POST['reg_param_json'];
+		$regParam = json_decode($reg_param_json,true);
+
+		// アップロードファイルが存在すればエンティティにセットする。
+		$upload_file = null;
+		if(!empty($_FILES["upload_file"])){
+			$upload_file = $_FILES["upload_file"]["name"];
+			$ent['diary_a_fn'] = $upload_file;
+		}
+
 	
 		// 更新ユーザーなど共通フィールドをセットする。
 		$ent = $this->setCommonToEntity($ent);
 	
 		// エンティティをDB保存
 		$this->DiaryA->begin();
-		$ent = $this->DiaryA->saveEntity($ent);
+		$ent = $this->DiaryA->saveEntity($ent,$regParam);
 		$this->DiaryA->commit();//コミット
-	
-	//■■■□□□■■■□□□■■■□□□
-// 		if(!empty($upload_file)){
+
+		if(!empty($upload_file)){
 			
-// 			// ファイルパスを組み立て
-// 			$upload_file = $_FILES["upload_file"]["name"];
-// 			$ffn = "game_rs/app{$id}/app_icon/{$fn}";
+			// ファイルパスを組み立て
+			$upload_file = $_FILES["upload_file"]["name"];
+			$ffn = "game_rs/app{$id}/app_icon/{$fn}";
 			
-// 			// 一時ファイルを所定の場所へコピー（フォルダなければ自動作成）
-// 			$this->copyEx($_FILES["upload_file"]["tmp_name"], $ffn);
+			// 一時ファイルを所定の場所へコピー（フォルダなければ自動作成）
+			$this->copyEx($_FILES["upload_file"]["tmp_name"], $ffn);
 	
 	
-// 		}
-	
-		//$ent=Sanitize::clean($ent, array('encode' => true));//サニタイズ（XSS対策）
-	
+		}
+		
+		if($errs) $ent['err'] = implode("','",$errs); // フォームに表示するエラー文字列をセット
+
+		
+
 		$json_data=json_encode($ent,true);//JSONに変換
 	
 		return $json_data;
@@ -260,32 +285,93 @@ class DiaryAController extends CrudBaseController {
 	 *
 	 * @note
 	 * Ajaxによる削除登録。
-	 * 物理削除でなく無効フラグをONにする方式。
+	 * 削除更新でだけでなく有効化に対応している。
+	 * また、DBから実際に削除する抹消にも対応している。
 	 */
 	public function ajax_delete(){
 		App::uses('Sanitize', 'Utility');
 	
 		$this->autoRender = false;//ビュー(ctp)を使わない。
+		if(empty($this->Auth->user())) return 'Error:login is needed.';// 認証中でなければエラー
 	
 		// JSON文字列をパースしてエンティティを取得する
 		$json=$_POST['key1'];
-		$ent = json_decode($json,true);
+		$ent0 = json_decode($json,true);
+		
+		// 登録パラメータ
+		$reg_param_json = $_POST['reg_param_json'];
+		$regParam = json_decode($reg_param_json,true);
 
+		// 抹消フラグ
+		$eliminate_flg = 0;
+		if(isset($regParam['eliminate_flg'])) $eliminate_flg = $regParam['eliminate_flg'];
+		
 		// 削除用のエンティティを取得する
-		$ent = $this->getEntForDelete($ent['id']);
+		$ent = $this->getEntForDelete($ent0['id']);
+		$ent['delete_flg'] = $ent0['delete_flg'];
 	
 		// エンティティをDB保存
 		$this->DiaryA->begin();
-		$ent = $this->DiaryA->saveEntity($ent);
+		if($eliminate_flg == 0){
+			$ent = $this->DiaryA->saveEntity($ent,$regParam); // 更新
+		}else{
+		    $this->DiaryA->delete($ent['id']); // 削除
+		}
 		$this->DiaryA->commit();//コミット
 	
-	
 		$ent=Sanitize::clean($ent, array('encode' => true));//サニタイズ（XSS対策）
-	
 		$json_data=json_encode($ent);//JSONに変換
 	
 		return $json_data;
-	}	
+	}
+	
+	
+	/**
+	* Ajax | 自動保存
+	* 
+	* @note
+	* バリデーション機能は備えていない
+	* 
+	*/
+	public function auto_save(){
+		
+		App::uses('Sanitize', 'Utility');
+		if(empty($this->Auth->user())) return 'Error:login is needed.';// 認証中でなければエラー
+		
+		$this->autoRender = false;//ビュー(ctp)を使わない。
+		
+		$json=$_POST['key1'];
+		
+		$data = json_decode($json,true);//JSON文字を配列に戻す
+		
+		// データ保存
+		$this->DiaryA->begin();
+		$this->DiaryA->saveAll($data); // まとめて保存。内部でSQLサニタイズされる。
+		$this->DiaryA->commit();
+
+		$res = array('success');
+		
+		$json_str = json_encode($res);//JSONに変換
+		
+		return $json_str;
+	}
+	
+
+	
+	
+	/**
+	 * CSVインポート | AJAX
+	 *
+	 * @note
+	 *
+	 */
+	public function csv_fu(){
+		$this->autoRender = false;//ビュー(ctp)を使わない。
+		if(empty($this->Auth->user())) return 'Error:login is needed.';// 認証中でなければエラー
+		
+		$this->csv_fu_base($this->DiaryA,array('id','diary_a_val','diary_a_name','diary_a_date','diary_a_group','diary_a_dt','img_fn','note','sort_no'));
+		
+	}
 	
 
 
@@ -346,12 +432,19 @@ class DiaryAController extends CrudBaseController {
 	private function getDataForDownload(){
 		 
 		
-		//セッションから読取
-		$kjs=$this->Session->read('diary_a_kjs');
-		
-		
+        //セッションから検索条件情報を取得
+        $kjs=$this->Session->read('diary_a_kjs');
+        
+        // セッションからページネーション情報を取得
+        $pages = $this->Session->read('diary_a_pages');
+
+        $page_no = 0;
+        $row_limit = 100000;
+        $sort_field = $pages['sort_field'];
+        $sort_desc = $pages['sort_desc'];
+
 		//DBからデータ取得
-		$data=$this->DiaryA->findData($kjs,null,null,null);
+	   $data=$this->DiaryA->findData($kjs,$page_no,$row_limit,$sort_field,$sort_desc);
 		if(empty($data)){
 			return array();
 		}
@@ -364,14 +457,13 @@ class DiaryAController extends CrudBaseController {
 	 * 当画面系の共通セット
 	 */
 	private function setCommon(){
-		$diary_aGroupList = array(1=>'ペルシャ',2=>'ボンベイ',3=>'三毛',4=>'シャム',5=>'雉トラ',6=>'スフィンクス');
+
 		
 		// 新バージョンであるかチェックする。
 		$new_version_flg = $this->checkNewPageVersion($this->this_page_version);
 		
 		$this->set(array(
 				'header' => 'header_demo',
-				'diary_aGroupList' => $diary_aGroupList,
 				'new_version_flg' => $new_version_flg, // 当ページの新バージョンフラグ   0:バージョン変更なし  1:新バージョン
 				'this_page_version' => $this->this_page_version,// 当ページのバージョン
 		));
@@ -389,26 +481,31 @@ class DiaryAController extends CrudBaseController {
 	private function initCrudBase(){
 
 		
-		
+		// CBBXS-3001 
+
+		// CBBXE
 		
 		
 		/// 検索条件情報の定義
-		$this->kensakuJoken=array(		
-
+		$this->kensakuJoken=array(
+		
+			// CBBXS-1000 
 			array('name'=>'kj_id','def'=>null),
 			array('name'=>'kj_category','def'=>null),
 			array('name'=>'kj_diary_date1','def'=>null),
 			array('name'=>'kj_diary_date2','def'=>null),
-			array('name'=>'kj_diary_date_ym','def'=>null),
 			array('name'=>'kj_diary_dt','def'=>null),
 			array('name'=>'kj_diary_note','def'=>null),
-			array('name'=>'kj_delete_flg','def'=>null),
+			array('name'=>'kj_delete_flg','def'=>0),
 			array('name'=>'kj_update_user','def'=>null),
 			array('name'=>'kj_ip_addr','def'=>null),
 			array('name'=>'kj_created','def'=>null),
 			array('name'=>'kj_modified','def'=>null),
-			array('name'=>'kj_limit','def'=>10),
-		
+
+			// CBBXE
+			
+			array('name'=>'row_limit','def'=>50),
+				
 		);
 		
 		
@@ -417,84 +514,76 @@ class DiaryAController extends CrudBaseController {
 		
 		/// 検索条件のバリデーション
 		$this->kjs_validate=array(
-
-			'kj_id' => array(
-				'naturalNumber'=>array(
-					'rule' => array('naturalNumber', true),
-					'message' => 'IDは数値を入力してください',
-					'allowEmpty' => true
+				
+				// CBBXS-1001
+				'kj_id' => array(
+						'naturalNumber'=>array(
+								'rule' => array('naturalNumber', true),
+								'message' => 'IDは数値を入力してください',
+								'allowEmpty' => true
+						),
 				),
-			),
-
-			'kj_category'=> array(
-				'maxLength'=>array(
-					'rule' => array('maxLength', 16),
-					'message' => 'カテゴリは16文字以内で入力してください',
-					'allowEmpty' => true
+				'kj_category'=> array(
+						'maxLength'=>array(
+								'rule' => array('maxLength', 255),
+								'message' => 'カテゴリは16文字以内で入力してください',
+								'allowEmpty' => true
+						),
 				),
-			),
-
-			'kj_diary_date1'=> array(
-				'rule' => array( 'date', 'ymd'),
-				'message' => '日誌日付は日付形式【yyyy-mm-dd】で入力してください。',
-				'allowEmpty' => true
-			),
-
-			'kj_diary_date2'=> array(
-				'rule' => array( 'date', 'ymd'),
-				'message' => '日誌日付は日付形式【yyyy-mm-dd】で入力してください。',
-				'allowEmpty' => true
-			),
-
-			'kj_diary_dt'=> array(
-				'maxLength'=>array(
-					'rule' => array('maxLength', ),
-					'message' => '日誌日時は文字以内で入力してください',
-					'allowEmpty' => true
+				'kj_diary_date1'=> array(
+						'rule' => array( 'date', 'ymd'),
+						'message' => '日誌日付【範囲1】は日付形式【yyyy-mm-dd】で入力してください。',
+						'allowEmpty' => true
 				),
-			),
-
-			'kj_diary_note'=> array(
-				'maxLength'=>array(
-					'rule' => array('maxLength', 1000),
-					'message' => '日誌は1000文字以内で入力してください',
-					'allowEmpty' => true
+				'kj_diary_date2'=> array(
+						'rule' => array( 'date', 'ymd'),
+						'message' => '日誌日付【範囲2】は日付形式【yyyy-mm-dd】で入力してください。',
+						'allowEmpty' => true
 				),
-			),
-
-			'kj_update_user'=> array(
-				'maxLength'=>array(
-					'rule' => array('maxLength', 50),
-					'message' => '更新者は50文字以内で入力してください',
-					'allowEmpty' => true
+				'kj_diary_dt'=> array(
+						'maxLength'=>array(
+								'rule' => array('maxLength', 20),
+								'message' => '日誌日時は20文字以内で入力してください',
+								'allowEmpty' => true
+						),
 				),
-			),
-
-			'kj_ip_addr'=> array(
-				'maxLength'=>array(
-					'rule' => array('maxLength', 40),
-					'message' => 'IPアドレスは40文字以内で入力してください',
-					'allowEmpty' => true
+				'kj_diary_note'=> array(
+						'maxLength'=>array(
+								'rule' => array('maxLength', 255),
+								'message' => '日誌は0文字以内で入力してください',
+								'allowEmpty' => true
+						),
 				),
-			),
-
-			'kj_created'=> array(
-				'maxLength'=>array(
-					'rule' => array('maxLength', 20),
-					'message' => '生成日時は20文字以内で入力してください',
-					'allowEmpty' => true
+				'kj_update_user'=> array(
+						'maxLength'=>array(
+								'rule' => array('maxLength', 255),
+								'message' => '更新者は50文字以内で入力してください',
+								'allowEmpty' => true
+						),
 				),
-			),
-
-			'kj_modified'=> array(
-				'maxLength'=>array(
-					'rule' => array('maxLength', 20),
-					'message' => '更新日は20文字以内で入力してください',
-					'allowEmpty' => true
+				'kj_ip_addr'=> array(
+						'maxLength'=>array(
+								'rule' => array('maxLength', 255),
+								'message' => 'IPアドレスは40文字以内で入力してください',
+								'allowEmpty' => true
+						),
 				),
-			),
+				'kj_created'=> array(
+						'maxLength'=>array(
+								'rule' => array('maxLength', 20),
+								'message' => '生成日時は20文字以内で入力してください',
+								'allowEmpty' => true
+						),
+				),
+				'kj_modified'=> array(
+						'maxLength'=>array(
+								'rule' => array('maxLength', 20),
+								'message' => '更新日は20文字以内で入力してください',
+								'allowEmpty' => true
+						),
+				),
 
-
+				// CBBXE
 		);
 		
 		
@@ -502,150 +591,74 @@ class DiaryAController extends CrudBaseController {
 		
 		
 		///フィールドデータ
-		$this->field_data=array('def'=>array(	
-
+		$this->field_data = array('def'=>array(
+		
+			// CBBXS-1002
 			'id'=>array(
-				'name'=>'ID', // HTMLテーブルの列名
-				'row_order'=>'DiaryA.id', // SQLでの並び替えコード
-				'clm_sort_no'=>0, // 列の並び順
-				'clm_show'=>1, // HTMLテーブルの列名
+					'name'=>'ID',//HTMLテーブルの列名
+					'row_order'=>'DiaryA.id',//SQLでの並び替えコード
+					'clm_show'=>1,//デフォルト列表示 0:非表示 1:表示
 			),
 			'category'=>array(
-				'name'=>'カテゴリ',
-				'row_order'=>'DiaryA.category',
-				'clm_sort_no'=>1,
-				'clm_show'=>1,
+					'name'=>'カテゴリ',
+					'row_order'=>'DiaryA.category',
+					'clm_show'=>0,
 			),
 			'diary_date'=>array(
-				'name'=>'日誌日付',
-				'row_order'=>'DiaryA.diary_date',
-				'clm_sort_no'=>2,
-				'clm_show'=>1,
+					'name'=>'日誌日付',
+					'row_order'=>'DiaryA.diary_date',
+					'clm_show'=>1,
 			),
 			'diary_dt'=>array(
-				'name'=>'日誌日時',
-				'row_order'=>'DiaryA.diary_dt',
-				'clm_sort_no'=>3,
-				'clm_show'=>0,
+					'name'=>'日誌日時',
+					'row_order'=>'DiaryA.diary_dt',
+					'clm_show'=>0,
 			),
 			'diary_note'=>array(
-				'name'=>'日誌',
-				'row_order'=>'DiaryA.diary_note',
-				'clm_sort_no'=>4,
-				'clm_show'=>1,
+					'name'=>'日誌',
+					'row_order'=>'DiaryA.diary_note',
+					'clm_show'=>1,
 			),
 			'delete_flg'=>array(
-				'name'=>'無効フラグ',
-				'row_order'=>'DiaryA.delete_flg',
-				'clm_sort_no'=>5,
-				'clm_show'=>0,
+					'name'=>'無効フラグ',
+					'row_order'=>'DiaryA.delete_flg',
+					'clm_show'=>0,
 			),
 			'update_user'=>array(
-				'name'=>'更新者',
-				'row_order'=>'DiaryA.update_user',
-				'clm_sort_no'=>6,
-				'clm_show'=>0,
+					'name'=>'更新者',
+					'row_order'=>'DiaryA.update_user',
+					'clm_show'=>0,
 			),
 			'ip_addr'=>array(
-				'name'=>'IPアドレス',
-				'row_order'=>'DiaryA.ip_addr',
-				'clm_sort_no'=>7,
-				'clm_show'=>0,
+					'name'=>'IPアドレス',
+					'row_order'=>'DiaryA.ip_addr',
+					'clm_show'=>1,
 			),
 			'created'=>array(
-				'name'=>'生成日時',
-				'row_order'=>'DiaryA.created',
-				'clm_sort_no'=>8,
-				'clm_show'=>0,
+					'name'=>'生成日時',
+					'row_order'=>'DiaryA.created',
+					'clm_show'=>0,
 			),
 			'modified'=>array(
-				'name'=>'更新日',
-				'row_order'=>'DiaryA.modified',
-				'clm_sort_no'=>9,
-				'clm_show'=>0,
+					'name'=>'更新日',
+					'row_order'=>'DiaryA.modified',
+					'clm_show'=>0,
 			),
-	
+
+			// CBBXE
 		));
-		
-		
-		
-		
-		
-		/// 編集エンティティ定義
-		$this->entity_info=array(		
 
-			array('name'=>'id','def'=>null),
-			array('name'=>'category','def'=>null),
-			array('name'=>'diary_date','def'=>null),
-			array('name'=>'diary_dt','def'=>null),
-			array('name'=>'diary_note','def'=>null),
-			array('name'=>'delete_flg','def'=>0),
-			array('name'=>'ip_addr','def'=>null),
-		
-		);
-		
-		
-		
-		
-		
-		/// 編集用バリデーション
-		$this->edit_validate=array(
+		// 列並び順をセットする
+		$clm_sort_no = 0;
+		foreach ($this->field_data['def'] as &$fEnt){
+			$fEnt['clm_sort_no'] = $clm_sort_no;
+			$clm_sort_no ++;
+		}
+		unset($fEnt);
 
-			'category'=> array(
-				'maxLength'=>array(
-					'rule' => array('maxLength', 16),
-					'message' => 'カテゴリは16文字以内で入力してください',
-					'allowEmpty' => true
-				),
-			),
-
-			'diary_date'=> array(
-				'rule' => array( 'date', 'ymd'),
-				'message' => '日誌日付は日付形式【yyyy-mm-dd】で入力してください。',
-				'allowEmpty' => true
-			),
-
-			'diary_dt'=> array(
-				'maxLength'=>array(
-					'rule' => array('maxLength', ),
-					'message' => '日誌日時は文字以内で入力してください',
-					'allowEmpty' => true
-				),
-			),
-
-			'diary_note'=> array(
-				'maxLength'=>array(
-					'rule' => array('maxLength', 1000),
-					'message' => '日誌は1000文字以内で入力してください',
-					'allowEmpty' => true
-				),
-			),
-
-			'ip_addr'=> array(
-				'maxLength'=>array(
-					'rule' => array('maxLength', 40),
-					'message' => 'IPアドレスは40文字以内で入力してください',
-					'allowEmpty' => true
-				),
-			),
-
-
-		);
-		
-		
-		
-		
 		 
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 
 
 }

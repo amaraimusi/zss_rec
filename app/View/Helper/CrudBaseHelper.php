@@ -47,38 +47,40 @@ class CrudBaseHelper extends FormHelper {
 	 * @return array CSSファイルリスト
 	 */
 	public function getCssList(){
-	    return array(
-	        'jquery.datetimepicker.min',   // 日時ピッカー
-	        'clm_show_hide',				// 列表示切替
-	        'YmpickerWrap',					// 年月ピッカーのラッパー
-	        'nouislider.min',				// 数値範囲入力スライダー・noUiSlider
-	        'CrudBase/NoUiSliderWrap',				// noUiSliderのラップ
-	        'CrudBase/index'				// CRUD indexページ共通
-	    );
+		return array(
+			'jquery.datetimepicker.min',		// 日時ピッカー
+			'clm_show_hide',					// 列表示切替
+			'YmpickerWrap',						// 年月ピッカーのラッパー
+			'nouislider.min',					// 数値範囲入力スライダー・noUiSlider
+			'CrudBase/NoUiSliderWrap',			// noUiSliderのラップ
+			'CrudBase/table_transform.css?ver=1.0',	// テーブル変形
+			'CrudBase/index'					// CRUD indexページ共通
+		);
 	}
 	
 	/**
 	 * JSファイルのインクルード
 	 */
 	public function getJsList(){
-	    return array(
-	        'clm_show_hide',				// 列表示切替
-	        'date_ex',						// 日付関連関数集
-	        'jquery.ui.ympicker',			// 年月選択ダイアログ
-	        'nouislider.min',				// 数値範囲入力スライダー・noUiSlider
-	        'jquery.datetimepicker.full.min',// 日時ピッカー
-	        'CrudBase/NoUiSliderWrap',		// noUiSliderのラップ
-	        'CrudBase/YmpickerWrap',		// 年月ピッカーのラッパークラス
-	        'CrudBase/CrudBaseBase.js?ver=2.3.1',
-	        'CrudBase/CrudBaseAutoSave.js?ver=1.0',
-	        'CrudBase/CrudBaseRowExchange.js?ver=1.2',
-	        'CrudBase/CrudBaseGadgetKj.js?ver=1.0',
-	        'CrudBase/CrudBase.js?ver=2.0',
-	        'livipage',						// ページ内リンク先プレビュー
-	        'ProcessWithMultiSelection',	// 一覧のチェックボックス複数選択による一括処理
-	        'CrudBase/ImportFu.js',			// インポート・ファイルアップロードクラス
-	        'CrudBase/index'                // CRUD indexページ共通
-	    );
+		return array(
+			'clm_show_hide',				// 列表示切替
+			'date_ex',						// 日付関連関数集
+			'jquery.ui.ympicker',			// 年月選択ダイアログ
+			'nouislider.min',				// 数値範囲入力スライダー・noUiSlider
+			'jquery.datetimepicker.full.min',// 日時ピッカー
+			'CrudBase/NoUiSliderWrap',		// noUiSliderのラップ
+			'CrudBase/YmpickerWrap',		// 年月ピッカーのラッパークラス
+			'CrudBase/CrudBaseBase.js?ver=2.3.1',
+			'CrudBase/CrudBaseAutoSave.js?ver=1.0',
+			'CrudBase/CrudBaseRowExchange.js?ver=1.2',
+			'CrudBase/CrudBaseGadgetKj.js?ver=1.0',
+			'CrudBase/CrudBase.js?ver=2.0',
+			'livipage',						// ページ内リンク先プレビュー
+			'ProcessWithMultiSelection',	// 一覧のチェックボックス複数選択による一括処理
+			'CrudBase/ImportFu.js',			// インポート・ファイルアップロードクラス
+			'CrudBase/AjaxLoginWithCake.js?ver=1.0', // CakePHPによるAjax認証
+			'CrudBase/index'				// CRUD indexページ共通
+		);
 	}
 	
 	/**
@@ -104,7 +106,7 @@ class CrudBaseHelper extends FormHelper {
 	 * @param array $kjs 検索条件データ
 	 */
 	public function setKjs(&$kjs){
-	    $this->kjs = &$kjs;
+		$this->kjs = &$kjs;
 	}
 	
 	
@@ -159,7 +161,7 @@ class CrudBaseHelper extends FormHelper {
 	 */
 	public function inputKjId($kjs){
 
-	    echo "<div class='kj_div kj_wrap' data-field='kj_id'>\n";
+		echo "<div class='kj_div kj_wrap' data-field='kj_id'>\n";
 		echo $this->input($this->_mdl.'kj_id', array(
 				'id' => 'kj_id',
 				'value' => $kjs['kj_id'],
@@ -241,11 +243,11 @@ class CrudBaseHelper extends FormHelper {
 	
 
 		echo $this->input($this->_mdl.$field, array(
-            'id' => $field,
-            'value' => $kjs[$field],
-            'type' => 'hidden',
-		    'data-field' => $field,
-		    'class' => 'kj_wrap',
+			'id' => $field,
+			'value' => $kjs[$field],
+			'type' => 'hidden',
+			'data-field' => $field,
+			'class' => 'kj_wrap',
 		));
 		
 	}
@@ -309,28 +311,28 @@ class CrudBaseHelper extends FormHelper {
 	 * @param int $maxlength 最大文字数(共通フィールドは設定不要）
 	 */
 	public function inputKjDateTime($kjs,$field,$wamei,$width=200,$title=null,$maxlength=255){
-	    
-	    if($title==null){
-	        $title = $wamei."で検索";
-	    }
-	    
-	    // maxlengthがデフォルト値のままなら、共通フィールド用のmaxlength属性値を取得する
-	    if($maxlength==255){
-	        $maxlength = $this->getMaxlenIfCommonField($field,$maxlength);
-	    }
-	    
-	    echo "<div class='kj_div kj_wrap' data-field='{$field}' data-gadget='datetimepicker' >\n";
-	    echo $this->input($this->_mdl.$field, array(
-	        'id' => $field,
-	        'value' => $kjs[$field],
-	        'type' => 'text',
-	        'label' => false,
-	        'placeholder' => $wamei,
-	        'style'=>"width:{$width}px",
-	        'title'=>$title,
-	        'maxlength'=>$maxlength,
-	    ));
-	    echo "</div>\n";
+		
+		if($title==null){
+			$title = $wamei."で検索";
+		}
+		
+		// maxlengthがデフォルト値のままなら、共通フィールド用のmaxlength属性値を取得する
+		if($maxlength==255){
+			$maxlength = $this->getMaxlenIfCommonField($field,$maxlength);
+		}
+		
+		echo "<div class='kj_div kj_wrap' data-field='{$field}' data-gadget='datetimepicker' >\n";
+		echo $this->input($this->_mdl.$field, array(
+			'id' => $field,
+			'value' => $kjs[$field],
+			'type' => 'text',
+			'label' => false,
+			'placeholder' => $wamei,
+			'style'=>"width:{$width}px",
+			'title'=>$title,
+			'maxlength'=>$maxlength,
+		));
+		echo "</div>\n";
 	}
 
 	
@@ -395,12 +397,12 @@ class CrudBaseHelper extends FormHelper {
 	 * 
 	 */	
 	public function inputKjDeleteFlg($kjs){
-	    echo "<div class='kj_div kj_wrap' data-field='kj_delete_flg'>\n";
+		echo "<div class='kj_div kj_wrap' data-field='kj_delete_flg'>\n";
 		echo $this->input($this->_mdl.'kj_delete_flg', array(
 			'id' => 'kj_delete_flg',
 			'type' => 'select',
 			'options' => array(
-			    -1=>'すべて表示',
+				-1=>'すべて表示',
 				0=>'有効',
 				1=>'削除',
 			),
@@ -423,19 +425,19 @@ class CrudBaseHelper extends FormHelper {
 	 *
 	 */
 	public function inputKjFlg($kjs,$field,$wamei){
-	    echo "<div class='kj_div kj_wrap' data-field='{$field}'>\n";
-	    echo $this->input($this->_mdl.$field, array(
-	        'id' => $field,
-	        'type' => 'select',
-	        'options' => array(
-	            -1=>'すべて表示',
-	            0=>'無効',
-	            1=>'有効',
-	        ),
-	        'default' => $kjs[$field],
-	        'label' => false,
-	    ));
-	    echo "</div>\n";
+		echo "<div class='kj_div kj_wrap' data-field='{$field}'>\n";
+		echo $this->input($this->_mdl.$field, array(
+			'id' => $field,
+			'type' => 'select',
+			'options' => array(
+				-1=>'すべて表示',
+				0=>'無効',
+				1=>'有効',
+			),
+			'default' => $kjs[$field],
+			'label' => false,
+		));
+		echo "</div>\n";
 	}
 	
 	
@@ -449,7 +451,7 @@ class CrudBaseHelper extends FormHelper {
 	 * 
 	 */	
 	public function inputKjLimit($kjs){
-	    echo "<div class='kj_div kj_wrap' data-field='row_limit'>\n";
+		echo "<div class='kj_div kj_wrap' data-field='row_limit'>\n";
 		echo $this->input($this->_mdl.'row_limit', array(
 				'id' => 'row_limit',
 				'type' => 'select',
@@ -955,14 +957,14 @@ class CrudBaseHelper extends FormHelper {
 	 * @param string $v 削除フラグ
 	 */
 	public function propFlg($v){
-	    
-	    if($v==0){
-	        $v="<span style='color:#b4b4b4;'>無効</span>";
-	    }elseif($v==1){
-	        $v="<span style='color:#23d6e4;'>有効</span>";
-	    }
-	    
-	    return $v;
+		
+		if($v==0){
+			$v="<span style='color:#b4b4b4;'>無効</span>";
+		}elseif($v==1){
+			$v="<span style='color:#23d6e4;'>有効</span>";
+		}
+		
+		return $v;
 	}
 	
 	
@@ -993,24 +995,24 @@ class CrudBaseHelper extends FormHelper {
 	
 	
 	public function tdFlg($v,$field=''){
-	    
-	    if(is_array($v)){
-	        $v = $v[$field];
-	    }
-	    if(empty($v)){
-	        $v = 0;
-	    }
-	    
-	    $v2 = $this->propFlg($v);
-	    $td = "<td><input type='hidden' name='{$field}' value='{$v}' /><span class='{$field}'>{$v2}</span></td>\n";
-	    
-	    $this->setTd($td,$field);
+		
+		if(is_array($v)){
+			$v = $v[$field];
+		}
+		if(empty($v)){
+			$v = 0;
+		}
+		
+		$v2 = $this->propFlg($v);
+		$td = "<td><input type='hidden' name='{$field}' value='{$v}' /><span class='{$field}'>{$v2}</span></td>\n";
+		
+		$this->setTd($td,$field);
 	}
 	public function tpFlg($v,$wamei='削除フラグ'){
-	    $v = $this->propFlg($v);
-	    
-	    $this->tblPreview($v,$wamei);
-	    
+		$v = $this->propFlg($v);
+		
+		$this->tblPreview($v,$wamei);
+		
 	}
 	
 	
@@ -1212,7 +1214,7 @@ class CrudBaseHelper extends FormHelper {
 	/**
 	 * 編集用の削除フラグチェックボックスを作成
 	 * @param array $ent エンティティ
-	 * @param string $mode モード    new:新規モード , edit:編集モード
+	 * @param string $mode モード	new:新規モード , edit:編集モード
 	 */
 	public function editDeleteFlg($ent,$mode){
 
@@ -1290,19 +1292,19 @@ class CrudBaseHelper extends FormHelper {
 	 * @param $onclick 複製フォームを呼び出すjs関数（CRUDタイプがajax型である場合。省略可)
 	 */
 	public function rowCopyBtn($id,$css_class=null,$onclick=null){
-	    
-	    if(empty($css_class)){
-	        $css_class='row_copy_btn btn btn-primary btn-xs';
-	    }
-	    
-	    if(empty($onclick)){
-	        $onclick="copyShow(this);";
-	    }
-	    
-	    $crudType = $this->param['crudType'];
-	    
-	    echo "<input type='button' value='複製'  class='{$css_class}' onclick='{$onclick}' />";
-	    
+		
+		if(empty($css_class)){
+			$css_class='row_copy_btn btn btn-primary btn-xs';
+		}
+		
+		if(empty($onclick)){
+			$onclick="copyShow(this);";
+		}
+		
+		$crudType = $this->param['crudType'];
+		
+		echo "<input type='button' value='複製'  class='{$css_class}' onclick='{$onclick}' />";
+		
 	}
 	
 	
@@ -1350,18 +1352,18 @@ class CrudBaseHelper extends FormHelper {
 	 * @param $onclick 削除フォームを呼び出すjs関数（CRUDタイプがajax型である場合。省略可)
 	 */
 	public function rowDeleteBtn(&$ent,$option=array()){
-	    
-	    $css_class = 'row_delete_btn btn btn-warning btn-xs';
-	    if(isset($option['css_class'])) $css_class = $option['css_class'];
-	    
-	    $onclick="deleteAction(this);";
-	    if(isset($option['onclick'])) $css_class = $option['onclick'];
-	    
-	    $crudType = $this->param['crudType'];
-	    
-	    // 検索条件データの削除フラグが0(有効)でなければ削除ボタンを表示しない。
-	    $style='';
-	    if($ent['delete_flg'] == 1) $style = "style='display:none'";
+		
+		$css_class = 'row_delete_btn btn btn-warning btn-xs';
+		if(isset($option['css_class'])) $css_class = $option['css_class'];
+		
+		$onclick="deleteAction(this);";
+		if(isset($option['onclick'])) $css_class = $option['onclick'];
+		
+		$crudType = $this->param['crudType'];
+		
+		// 検索条件データの削除フラグが0(有効)でなければ削除ボタンを表示しない。
+		$style='';
+		if($ent['delete_flg'] == 1) $style = "style='display:none'";
 		
 		// CRUDタイプがajax型である場合
 		if(empty($crudType)){
@@ -1380,24 +1382,24 @@ class CrudBaseHelper extends FormHelper {
 	 * @param $onclick 有効フォームを呼び出すjs関数（CRUDタイプがajax型である場合。省略可)
 	 */
 	public function rowEnabledBtn(&$ent,$option=array()){
-	    
-	    $css_class = 'row_enabled_btn btn btn-success btn-xs';
-	    if(isset($option['css_class'])) $css_class = $option['css_class'];
-	    
-	    $onclick="enabledAction(this);";
-	    if(isset($option['onclick'])) $css_class = $option['onclick'];
-	    
-	    $crudType = $this->param['crudType'];
-	    
-	    // 検索条件データの有効フラグが1(無効)でなければ有効ボタンを表示しない。
-	    $style='';
-	    if($ent['delete_flg'] != 1) $style = "style='display:none'";
-	    
-	    // CRUDタイプがajax型である場合
-	    if(empty($crudType)){
-	        echo "<input type='button' value='有効'  class='{$css_class}' onclick='{$onclick}' {$style} />";
-	    }
-	    
+		
+		$css_class = 'row_enabled_btn btn btn-success btn-xs';
+		if(isset($option['css_class'])) $css_class = $option['css_class'];
+		
+		$onclick="enabledAction(this);";
+		if(isset($option['onclick'])) $css_class = $option['onclick'];
+		
+		$crudType = $this->param['crudType'];
+		
+		// 検索条件データの有効フラグが1(無効)でなければ有効ボタンを表示しない。
+		$style='';
+		if($ent['delete_flg'] != 1) $style = "style='display:none'";
+		
+		// CRUDタイプがajax型である場合
+		if(empty($crudType)){
+			echo "<input type='button' value='有効'  class='{$css_class}' onclick='{$onclick}' {$style} />";
+		}
+		
 	}
 	
 	
@@ -1415,25 +1417,25 @@ class CrudBaseHelper extends FormHelper {
 	 *  - onclick 抹消フォームを呼び出すjs関数（CRUDタイプがajax型である場合。省略可)
 	 */
 	public function rowEliminateBtn(&$ent,$option=array()){
-	    
+		
 
-	    
-	    $css_class = 'row_eliminate_btn btn btn-danger btn-xs';
-	    if(isset($option['css_class'])) $css_class = $option['css_class'];
-	    
-	    $onclick="eliminateShow(this);";
-	    if(isset($option['onclick'])) $css_class = $option['onclick'];
+		
+		$css_class = 'row_eliminate_btn btn btn-danger btn-xs';
+		if(isset($option['css_class'])) $css_class = $option['css_class'];
+		
+		$onclick="eliminateShow(this);";
+		if(isset($option['onclick'])) $css_class = $option['onclick'];
 
-	    $crudType = $this->param['crudType'];
-	    
-	    $style='';
-	    if($ent['delete_flg'] != 1) $style = "style='display:none'";
-	    
-	    // CRUDタイプがajax型である場合
-	    if(empty($crudType)){
-	        echo "<input type='button' value='抹消'  class='{$css_class}' onclick='{$onclick}' {$style} title='データベースからも消去します。復元できません。' />";
-	    }
-	    
+		$crudType = $this->param['crudType'];
+		
+		$style='';
+		if($ent['delete_flg'] != 1) $style = "style='display:none'";
+		
+		// CRUDタイプがajax型である場合
+		if(empty($crudType)){
+			echo "<input type='button' value='抹消'  class='{$css_class}' onclick='{$onclick}' {$style} title='データベースからも消去します。復元できません。' />";
+		}
+		
 	}
 	
 	
@@ -1867,13 +1869,13 @@ class CrudBaseHelper extends FormHelper {
 	 * @param string $value 値
 	 */
 	public function hiddenX($field,$value){
-	    
-	    echo $this->input($this->_mdl.$field, array(
-	        'id' => $field,
-	        'value' => $value,
-	        'type' => 'hidden',
-	    ));
-	    
+		
+		echo $this->input($this->_mdl.$field, array(
+			'id' => $field,
+			'value' => $value,
+			'type' => 'hidden',
+		));
+		
 	}
 	
 	
