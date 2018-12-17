@@ -611,7 +611,7 @@ class KnowledgeController extends CrudBaseController {
 				),
 				'kj_kl_category' => array(
 						'custom'=>array(
-								'rule' => array( 'custom', '/^[-]?[0-9] ?$/' ),
+								'rule' => array( 'custom', '/^[-]?[0-9]+?$/' ),
 								'message' => 'カテゴリは整数を入力してください。',
 								'allowEmpty' => true
 						),

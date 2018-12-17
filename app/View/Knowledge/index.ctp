@@ -14,13 +14,44 @@ $jsList[] = 'CrudBase/AjaxLoginWithCake.js?ver=1.2.1';
 $this->assign('script', $this->Html->script($jsList,array('charset'=>'utf-8')));
 
 ?>
-
+<span style="font-size:1.2em">心得</span>
+<span id="ajax_login_with_cake"></span><!-- 認証用 -->
 <div id="h2_div">
-	<div><h2>心得</h2></div>
-	<div id="ajax_login_with_cake"></div><!-- 認証用 -->
 	<div id="btn_mode_m" style="display:none"><a href="?a=1&mode=2" class="btn btn-warning btn-xs" >管理者モード</a></div>
 	<div id="btn_mode_l" style="display:none"><a href="?a=1&mode=1" class="btn btn-warning btn-xs" >覚えモード</a></div>
+	<button type="button" class="btn btn-warning btn-xs" onclick="newInpShow(this);">新規入力</button>
+	<!-- 検索条件入力フォーム -->
+	<div style="display:inline-block">
+	<?php 
+		echo $this->Form->create('Knowledge', array('url' => true ));
+		echo "<input type='search' name='data[Knowledge][kj_kl_text]' id='kj_kl_text' value='' placeholder='心得テキスト' style='width:180px' title='心得テキストで検索' maxlength='255' >";
+		echo "<div class='detail_div' style='display:none'>";
+		// --- CBBXS-1004
+		$this->CrudBase->inputKjId($kjs);
+		$this->CrudBase->inputKjText($kjs,'kj_xid','XID');
+		$this->CrudBase->inputKjSelect($kjs,'kj_kl_category','ネコ種別',$klCategoryList);
+		$this->CrudBase->inputKjText($kjs,'kj_contents_url','内容URL');
+		$this->CrudBase->inputKjText($kjs,'kj_doc_name','文献名');
+		$this->CrudBase->inputKjText($kjs,'kj_doc_text','文献テキスト');
+		$this->CrudBase->inputKjText($kjs,'kj_dtm','学習日時');
+		$this->CrudBase->inputKjText($kjs,'kj_next_dtm','次回日時');
+		$this->CrudBase->inputKjNouislider($kjs,'level','学習レベル');
+		$this->CrudBase->inputKjHidden($kjs,'kj_sort_no');
+		$this->CrudBase->inputKjDeleteFlg($kjs);
+		$this->CrudBase->inputKjText($kjs,'kj_update_user','更新ユーザー');
+		$this->CrudBase->inputKjText($kjs,'kj_ip_addr','IPアドレス');
+		$this->CrudBase->inputKjCreated($kjs);
+		$this->CrudBase->inputKjModified($kjs);
+		$this->CrudBase->inputKjLimit($kjs);
+		echo '</div>';
+		// --- CBBXE
+		
+		echo $this->Form->submit('検索', array('name' => 'search','class'=>'btn btn-success','div'=>false,));
+		echo $this->Form->end();
+	?>
+	</div>
 </div>
+
 
 <div id="learn_index" class="btn-group">
 	<a href="?a=1" class="btn btn-info btn-xs" >全て</a>
@@ -45,49 +76,25 @@ $this->assign('script', $this->Html->script($jsList,array('charset'=>'utf-8')));
 
 
 <div id="func_btns" >
-	<button type="button" onclick="$('#detail_div').toggle(300);" class="btn btn-default">
+	<button type="button" onclick="$('.detail_div').toggle(300);" class="btn btn-default">
 		<span class="glyphicon glyphicon-cog"></span></button>
 	<a href="<?php echo $home_url; ?>" class="btn btn-info" title="この画面を最初に表示したときの状態に戻します。（検索状態、列並べの状態を初期状態に戻します。）">
 		<span class="glyphicon glyphicon-certificate"  ></span></a>
-	<?php $this->CrudBase->newBtn();// 新規入力ボタンを作成 ?>
+	
 	<a href="kl_category" class="btn btn-primary btn-sm" >心得カテゴリー</a>
 	
 </div>
 <div style="clear:both"></div>
 
 
-<!-- 検索条件入力フォーム -->
-<?php echo $this->Form->create('Knowledge', array('url' => true )); ?>
+
 <div style="clear:both"></div>
 
-<div id="detail_div" style="display:none">
+<div id=".detail_div" style="display:none">
 	
 	<?php 
-	
-	// --- CBBXS-1004
-		$this->CrudBase->inputKjId($kjs);
-		$this->CrudBase->inputKjText($kjs,'kj_kl_text','心得テキスト');
-		$this->CrudBase->inputKjText($kjs,'kj_xid','XID');
-		$this->CrudBase->inputKjSelect($kjs,'kj_kl_category','ネコ種別',$klCategoryList); 
-		$this->CrudBase->inputKjText($kjs,'kj_contents_url','内容URL');
-		$this->CrudBase->inputKjText($kjs,'kj_doc_name','文献名');
-		$this->CrudBase->inputKjText($kjs,'kj_doc_text','文献テキスト');
-		$this->CrudBase->inputKjText($kjs,'kj_dtm','学習日時');
-		$this->CrudBase->inputKjText($kjs,'kj_next_dtm','次回日時');
-		$this->CrudBase->inputKjNouislider($kjs,'level','学習レベル');
-		$this->CrudBase->inputKjHidden($kjs,'kj_sort_no');
-		$this->CrudBase->inputKjDeleteFlg($kjs);
-		$this->CrudBase->inputKjText($kjs,'kj_update_user','更新ユーザー');
-		$this->CrudBase->inputKjText($kjs,'kj_ip_addr','IPアドレス');
-		$this->CrudBase->inputKjCreated($kjs);
-		$this->CrudBase->inputKjModified($kjs);
 
-	// --- CBBXE
-	
-	$this->CrudBase->inputKjLimit($kjs);
 	echo $this->element('CrudBase/crud_base_cmn_inp');
-
-	echo $this->Form->submit('検索', array('name' => 'search','class'=>'btn btn-success','div'=>false,));
 	
 	echo $this->element('CrudBase/crud_base_index');
 	
@@ -96,9 +103,11 @@ $this->assign('script', $this->Html->script($jsList,array('charset'=>'utf-8')));
 	?>
 
 </div><!-- detail_div -->
-<?php echo $this->Form->end()?>
 
 </div><!-- func_div -->
+
+
+	
 
 <div style="margin-top:8px;">
 	<div style="display:inline-block">

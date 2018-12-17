@@ -53,7 +53,11 @@ class KnowledgeHelper extends AppHelper{
 		
 		// カテゴリ　kl_category
 		$kl_category = $ent['kl_category'];
-		$kl_category_name = $klCategoryList[$kl_category];
+		$kl_category_name = '';
+		if(!empty($klCategoryList[$kl_category])){
+			$kl_category_name = $klCategoryList[$kl_category];
+		}
+		
 		
 		// 出力
 		echo "
