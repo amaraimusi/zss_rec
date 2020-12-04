@@ -1,3 +1,4 @@
+
 /**
  * CakePHPによるAjax認証
  * 

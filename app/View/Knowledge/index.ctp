@@ -10,7 +10,6 @@ $this->assign('css', $this->Html->css($cssList));
 $jsList = $this->CrudBase->getJsList();
 $jsList[] = 'Knowledge/LearnCounter.js';
 $jsList[] = 'Knowledge/index'; // 当画面専用JavaScrip
-$jsList[] = 'CrudBase/AjaxLoginWithCake.js?ver=1.2.1';
 $this->assign('script', $this->Html->script($jsList,array('charset'=>'utf-8')));
 
 ?>
