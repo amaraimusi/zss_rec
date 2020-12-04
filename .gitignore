@@ -24,3 +24,5 @@ Thumbs.db
 /app_bk/
 /lib/
 /lib.tar.gz
+/.settings/
+/.project
